@@ -1,5 +1,13 @@
 class Month {
   final String id;
-  final List<DateTime> days;
-  Month({this.days,this.id}); 
+  Map<String, List<DateTime>> dayAndDate = {
+    'Sunday': [],
+    'Monday': [],
+    'Tuesday': [],
+    'Wednesday': [],
+    'Thursday': [],
+    'Friday': [],
+    'Saturday': []
+  };
+  Month({this.id});
 }

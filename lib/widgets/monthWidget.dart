@@ -17,19 +17,6 @@ class MnthWidget extends StatefulWidget {
 
 class _MnthWidgetState extends State<MnthWidget> {
   bool bottomSheetOpen = false;
-  List<DateTime> monday = [];
-
-  List<DateTime> tuesday = [];
-
-  List<DateTime> wednesday = [];
-
-  List<DateTime> thursday = [];
-
-  List<DateTime> friday = [];
-
-  List<DateTime> saturday = [];
-
-  List<DateTime> sunday = [];
 
   var dazz = StateNotifierProvider<AllScheduledDate>((ref) {
     return AllScheduledDate(DateTime.now());
@@ -82,11 +69,16 @@ class _MnthWidgetState extends State<MnthWidget> {
         dayz.substring(0, 3),
         style: TextStyle(color: isSun ? Colors.red : Colors.black),
       ),
-      weekday[0].day > saturday[0].day
+      weekday[0].day > widget.month.dayAndDate['Saturday'][0].day
           ? DateWidget(date: Text(''))
           : SizedBox(height: 0),
       ...daywidgets,
-      weekday[weekday.length - 1].day > saturday[saturday.length - 1].day
+      weekday[weekday.length - 1].day >
+              widget
+                  .month
+                  .dayAndDate['Saturday']
+                      [widget.month.dayAndDate['Saturday'].length - 1]
+                  .day
           ? SizedBox()
           : DateWidget(date: Text('')),
     ]);
@@ -95,48 +87,14 @@ class _MnthWidgetState extends State<MnthWidget> {
   List<Column> weekdays = [];
 
   initializeColumn() {
-    monday = [];
-    tuesday = [];
-    wednesday = [];
-    thursday = [];
-    friday = [];
-    saturday = [];
-    sunday = [];
-
-    for (DateTime i in widget.month.days) {
-      switch (DateFormat('EEEE').format(i)) {
-        case 'Sunday':
-          sunday.add(i);
-          break;
-        case 'Monday':
-          monday.add(i);
-          break;
-        case 'Tuesday':
-          tuesday.add(i);
-          break;
-        case 'Wednesday':
-          wednesday.add(i);
-          break;
-        case 'Thursday':
-          thursday.add(i);
-          break;
-        case 'Friday':
-          friday.add(i);
-          break;
-        case 'Saturday':
-          saturday.add(i);
-          break;
-      }
-    }
-
     weekdays = [
-      oneColumn('Sunday', sunday),
-      oneColumn('Monday', monday),
-      oneColumn('Tuesday', tuesday),
-      oneColumn('Wednesday', wednesday),
-      oneColumn('Thursday', thursday),
-      oneColumn('Friday', friday),
-      oneColumn('Saturday', saturday)
+      oneColumn('Sunday', widget.month.dayAndDate['Sunday']),
+      oneColumn('Monday', widget.month.dayAndDate['Monday']),
+      oneColumn('Tuesday', widget.month.dayAndDate['Tuesday']),
+      oneColumn('Wednesday', widget.month.dayAndDate['Wednesday']),
+      oneColumn('Thursday', widget.month.dayAndDate['Thursday']),
+      oneColumn('Friday', widget.month.dayAndDate['Friday']),
+      oneColumn('Saturday', widget.month.dayAndDate['Saturday'])
     ];
   }
 

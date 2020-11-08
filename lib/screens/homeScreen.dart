@@ -1,3 +1,4 @@
+import 'package:demotest/models/monthModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/models/yearModel.dart';
 import 'package:demotest/screens/monthDetails.dart';
@@ -39,12 +40,20 @@ class _CalenderState extends State<Calender> {
     2023,
     2024
   ];
-  Year year = Year(id: 2020);
+  Year year = Year();
+  List<Month> generated = [];
+  initState() {
+    super.initState();
+    year = Year(
+      id: val,
+    );
+    generated = year.generateMonths();
+  }
 
   Widget build(BuildContext context) {
     final scheduledDate = ScheduledDateProvider.of(context);
     var provider = StateNotifierProvider((ref) => scheduledDate);
-    year = Year(id: val);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -68,19 +77,18 @@ class _CalenderState extends State<Calender> {
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : ListView(children: <Widget>[
-              for (int index = 0; index < year.generateMonths().length; index++)
+              for (int index = 0; index < generated.length; index++)
                 InkWell(
                     onTap: () {
                       // ignore: invalid_use_of_protected_member
                       context.read(provider).state =
-                          year.generateMonths()[index].days[0];
+                          generated[index].dayAndDate['Saturday'][0];
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) =>
-                              MonthDetails(year.generateMonths()[index])));
+                          builder: (_) => MonthDetails(generated[index])));
                     },
                     child: Container(
                         child: MonthHomeWidget(
-                      month: year.generateMonths()[index],
+                      month: generated[index],
                     )))
             ]),
     );

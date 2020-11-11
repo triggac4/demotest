@@ -31,10 +31,15 @@ class Year implements YearBase {
     List.generate(367, (index) {
       if (january1.add(Duration(days: index)).year.toString() !=
           this.id.toString()) return;
+
       date.add(january1.add(Duration(days: index)));
 
       switch (DateFormat('MM').format(date[index])) {
         case "01":
+          if (date[index].day == 01) {
+            months[0].firstDay = date[index];
+          }
+
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[0].dayAndDate['Sunday'].add(date[index]);
@@ -58,9 +63,12 @@ class Year implements YearBase {
               months[0].dayAndDate['Saturday'].add(date[index]);
               break;
           }
-
           break;
         case "02":
+          if (date[index].day == 01) {
+            months[1].firstDay = date[index];
+            print(date[index]);
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[1].dayAndDate['Sunday'].add(date[index]);
@@ -87,6 +95,9 @@ class Year implements YearBase {
 
           break;
         case "03":
+          if (date[index].day == 01) {
+            months[2].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[2].dayAndDate['Sunday'].add(date[index]);
@@ -113,6 +124,9 @@ class Year implements YearBase {
 
           break;
         case "04":
+          if (date[index].day == 01) {
+            months[3].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[3].dayAndDate['Sunday'].add(date[index]);
@@ -139,6 +153,9 @@ class Year implements YearBase {
 
           break;
         case "05":
+          if (date[index].day == 01) {
+            months[4].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[4].dayAndDate['Sunday'].add(date[index]);
@@ -165,6 +182,9 @@ class Year implements YearBase {
 
           break;
         case "06":
+          if (date[index].day == 01) {
+            months[5].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[5].dayAndDate['Sunday'].add(date[index]);
@@ -191,6 +211,9 @@ class Year implements YearBase {
 
           break;
         case "07":
+          if (date[index].day == 01) {
+            months[6].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[6].dayAndDate['Sunday'].add(date[index]);
@@ -217,6 +240,9 @@ class Year implements YearBase {
 
           break;
         case "08":
+          if (date[index].day == 01) {
+            months[7].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[7].dayAndDate['Sunday'].add(date[index]);
@@ -243,6 +269,9 @@ class Year implements YearBase {
 
           break;
         case "09":
+          if (date[index].day == 01) {
+            months[8].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[8].dayAndDate['Sunday'].add(date[index]);
@@ -269,6 +298,9 @@ class Year implements YearBase {
 
           break;
         case "10":
+          if (date[index].day == 01) {
+            months[9].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[9].dayAndDate['Sunday'].add(date[index]);
@@ -295,6 +327,9 @@ class Year implements YearBase {
 
           break;
         case "11":
+          if (date[index].day == 01) {
+            months[10].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[10].dayAndDate['Sunday'].add(date[index]);
@@ -321,6 +356,9 @@ class Year implements YearBase {
 
           break;
         case "12":
+          if (date[index].day == 01) {
+            months[11].firstDay = date[index];
+          }
           switch (DateFormat('EEEE').format(date[index])) {
             case 'Sunday':
               months[11].dayAndDate['Sunday'].add(date[index]);
@@ -344,10 +382,10 @@ class Year implements YearBase {
               months[11].dayAndDate['Saturday'].add(date[index]);
               break;
           }
-
           break;
       }
     });
+
     print('generated');
     return months;
   }

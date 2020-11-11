@@ -42,15 +42,13 @@ class _CalenderState extends State<Calender> {
   ];
   Year year = Year();
   List<Month> generated = [];
-  initState() {
-    super.initState();
+
+  Widget build(BuildContext context) {
     year = Year(
       id: val,
     );
-    generated = year.generateMonths();
-  }
 
-  Widget build(BuildContext context) {
+    generated = year.generateMonths();
     final scheduledDate = ScheduledDateProvider.of(context);
     var provider = StateNotifierProvider((ref) => scheduledDate);
 
@@ -66,9 +64,8 @@ class _CalenderState extends State<Calender> {
             );
           }).toList(),
           onChanged: (valu) {
-            setState(() {
-              val = valu;
-            });
+            val = valu;
+            setState(() {});
           },
           value: null,
           underline: Text('$val'),
@@ -81,8 +78,7 @@ class _CalenderState extends State<Calender> {
                 InkWell(
                     onTap: () {
                       // ignore: invalid_use_of_protected_member
-                      context.read(provider).state =
-                          generated[index].dayAndDate['Saturday'][0];
+                      context.read(provider).state = generated[index].firstDay;
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => MonthDetails(generated[index])));
                     },

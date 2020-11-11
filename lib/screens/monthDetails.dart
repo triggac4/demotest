@@ -74,6 +74,11 @@ class _MonthDetailsState extends State<MonthDetails> {
                     : Text("Schedule for " +
                         DateFormat.MMMMd()
                             .format(allschedule.forThatDay(dateee)[0].date)),
+                if (allschedule.forThatDay(dateee).isEmpty)
+                  Container(
+                    child: Image.asset(
+                        "images/no-schedule-no-schedule-png-194_181.png"),
+                  ),
                 for (var index = 0;
                     index < allschedule.forThatDay(dateee).length;
                     index++)

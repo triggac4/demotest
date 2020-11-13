@@ -29,37 +29,41 @@ class LittleSchedule extends StatelessWidget {
                 color: scheduledDate.color,
               )
             ]),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              FlatButton(
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                  )),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Text(
-                    scheduledDate.title,
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  Text(DateFormat('hh:mm').format(scheduledDate.date),
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black45))
-                ],
-              ),
-              FlatButton(
-                  onPressed: () => removeSchedule(scheduledDate),
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  )),
-            ]),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.45,
+          child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FlatButton(
+                    onPressed: () {},
+                    child: Icon(
+                      Icons.edit,
+                      color: Colors.black,
+                    )),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      scheduledDate.title,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    Text(DateFormat('hh:mm').format(scheduledDate.date),
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black45))
+                  ],
+                ),
+                FlatButton(
+                    onPressed: () => removeSchedule(scheduledDate),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    )),
+              ]),
+        ),
       ),
     );
   }

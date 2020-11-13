@@ -78,6 +78,15 @@ class _AddScheduleState extends State<AddSchedule> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
+                DropdownButton(
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('Daily'),
+                    ),
+                    DropdownMenuItem(child: Text('Daily')),
+                    DropdownMenuItem(child: Text('Daily'))
+                  ],
+                ),
                 FlatButton(
                   color: Colors.orangeAccent,
                   padding: EdgeInsets.zero,

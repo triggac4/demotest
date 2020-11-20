@@ -1,6 +1,7 @@
 import 'package:demotest/models/monthModel.dart';
 import 'package:demotest/models/scheduledDateModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
+import 'package:demotest/monthSceenResponsive.dart';
 import 'package:demotest/widgets/addSchedule.dart';
 import 'package:demotest/widgets/littleSheduleWidget.dart';
 import 'package:demotest/widgets/monthWidget.dart';
@@ -35,6 +36,9 @@ class _MonthDetailsState extends State<MonthDetails> {
   var datee = DateTime.now();
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    bool isPortrait = width <= 600;
+
     allschedule = ScheduledDateProvider.of(context);
     var dayprovider = StateNotifierProvider((ref) {
       return allschedule;
@@ -49,51 +53,70 @@ class _MonthDetailsState extends State<MonthDetails> {
               color: Colors.black,
             ),
           )),
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        MonthDetailWidget(
-          chosenDates: allschedule,
-          month: widget.month,
-          function: showButtomSheetz,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - 50,
+          child: MonthDetailsResponse(
+            listOfWidget: [
+              Container(
+                width: isPortrait ? null : width / 2,
+                child: MonthDetailWidget(
+                  chosenDates: allschedule,
+                  month: widget.month,
+                  function: showButtomSheetz,
+                ),
+              ),
+              SizedBox(
+                height: isPortrait ? 10 : null,
+                width: isPortrait ? null : 10,
+              ),
+              Expanded(child: Consumer(
+                builder: (cxt, watch, child) {
+                  var dateee = watch(dayprovider.state);
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Text('Schedule for the Month',
+                                style: TextStyle(fontWeight: FontWeight.bold))),
+                        allschedule.forThatDay(dateee).isEmpty
+                            ? Text(
+                                "no schedule for ${DateFormat.MMMMd().format(dateee)}")
+                            : Text("Schedule for " +
+                                DateFormat.MMMMd().format(
+                                    allschedule.forThatDay(dateee)[0].date)),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        if (allschedule.forThatDay(dateee).isEmpty)
+                          Container(
+                            child: Image.asset(
+                                "images/no-schedule-no-schedule-png-194_181.png"),
+                          ),
+                        for (var index = 0;
+                            index < allschedule.forThatDay(dateee).length;
+                            index++)
+                          allschedule.forThatDay(dateee) == []
+                              ? SizedBox()
+                              : Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  child: LittleSchedule(
+                                      allschedule.forThatDay(dateee)[index],
+                                      removeScheduledDate))
+                      ],
+                    ),
+                  );
+                },
+              ))
+            ],
+            width: width,
+          ),
         ),
-        SizedBox(
-          height: 10,
-        ),
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Text('Schedule for the Month',
-                style: TextStyle(fontWeight: FontWeight.bold))),
-        Expanded(child: Consumer(
-          builder: (cxt, watch, child) {
-            var dateee = watch(dayprovider.state);
-            return ListView(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              children: [
-                allschedule.forThatDay(dateee).isEmpty
-                    ? Text(
-                        "no schedule for ${DateFormat.MMMMd().format(dateee)}")
-                    : Text("Schedule for " +
-                        DateFormat.MMMMd()
-                            .format(allschedule.forThatDay(dateee)[0].date)),
-                if (allschedule.forThatDay(dateee).isEmpty)
-                  Container(
-                    child: Image.asset(
-                        "images/no-schedule-no-schedule-png-194_181.png"),
-                  ),
-                for (var index = 0;
-                    index < allschedule.forThatDay(dateee).length;
-                    index++)
-                  allschedule.forThatDay(dateee) == []
-                      ? SizedBox()
-                      : Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5),
-                          child: LittleSchedule(
-                              allschedule.forThatDay(dateee)[index],
-                              removeScheduledDate))
-              ],
-            );
-          },
-        ))
-      ]),
+      ),
     );
   }
 }

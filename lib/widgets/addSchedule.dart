@@ -38,6 +38,26 @@ class _AddScheduleState extends State<AddSchedule> {
     desController.dispose();
   }
 
+  Widget timeSelector() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        FlatButton(
+          color: Colors.orangeAccent,
+          padding: EdgeInsets.zero,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          onPressed: () {
+            pickTime(context);
+          },
+          child: Text('pick time'),
+        ),
+        SizedBox(width: 15),
+        Text(time.format(context)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -75,35 +95,13 @@ class _AddScheduleState extends State<AddSchedule> {
                 controller: desController,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                DropdownButton(
-                  items: [
-                    DropdownMenuItem(
-                      child: Text('Daily'),
-                    ),
-                    DropdownMenuItem(child: Text('Daily')),
-                    DropdownMenuItem(child: Text('Daily'))
-                  ],
-                ),
-                FlatButton(
-                  color: Colors.orangeAccent,
-                  padding: EdgeInsets.zero,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  onPressed: () {
-                    pickTime(context);
-                  },
-                  child: Text('pick time'),
-                ),
-                Text(time.format(context)),
-              ],
-            ),
             SizedBox(height: 10),
             Text(
               error,
               style: TextStyle(color: Colors.red),
             ),
+            SizedBox(height: 5),
+            timeSelector(),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),

@@ -8,9 +8,11 @@ class LittleSchedule extends StatelessWidget {
   final Function removeSchedule;
   final ScheduledDate scheduledDate;
   openSchedulePage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return ScheduleDetail(scheduledDate);
-    }));
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) {
+        return ScheduleDetail(scheduledDate);
+      }),
+    );
   }
 
   build(BuildContext context) {
@@ -30,10 +32,10 @@ class LittleSchedule extends StatelessWidget {
               )
             ]),
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.45,
+          padding: EdgeInsets.all(10),
           child: Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 FlatButton(
                     onPressed: () {},

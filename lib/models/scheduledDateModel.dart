@@ -12,6 +12,7 @@ class ScheduledDate {
   DateTime date;
   Color color;
   int positionInColor;
+  String period;
   List<Color> colors = [
     Colors.brown[200],
     Colors.blueGrey[700],
@@ -20,7 +21,11 @@ class ScheduledDate {
     Colors.lime[800]
   ];
   ScheduledDate(
-      {this.date, this.title, this.description, positionInColor = -1}) {
+      {this.date,
+      this.title,
+      this.description,
+      positionInColor = -1,
+      this.period}) {
     var rand = new Random();
     if (positionInColor == -1)
       this.positionInColor = rand.nextInt(this.colors.length);
@@ -35,6 +40,7 @@ class ScheduledDate {
     this.positionInColor = mapSchedule['positionInColor'];
     this.key = mapSchedule['id'];
     this.color = this.colors[this.positionInColor];
+    this.period = mapSchedule['period'];
   }
   Map<String, dynamic> toMap() {
     return {
@@ -42,7 +48,8 @@ class ScheduledDate {
       "title": title,
       'description': description,
       'date': date.toString(),
-      'positionInColor': positionInColor
+      'positionInColor': positionInColor,
+      'period': period
     };
   }
 }
@@ -57,11 +64,17 @@ class AllScheduledDate extends StateNotifier<DateTime> {
 
   int firstScheduleOfTheDay(DateTime date) {
     var index = _dates.indexWhere((element) {
-      if (date.month == element.date.month &&
-          date.year == element.date.year &&
-          date.day == element.date.day)
+      if (element.date.day == date.day &&
+          element.date.month == date.month &&
+          element.date.year == date.year) {
         return true;
-      else
+      } else if (element.date.day == date.day &&
+          element.date.month == date.month &&
+          element.period == 'yearly') {
+        return true;
+      } else if (element.date.day == date.day && element.period == 'monthly') {
+        return true;
+      } else
         return false;
     });
     return index;
@@ -85,21 +98,29 @@ class AllScheduledDate extends StateNotifier<DateTime> {
     }
   }
 
-  List<ScheduledDate> forThatDay(dayy) {
+  List<ScheduledDate> forThatDay(DateTime dayy) {
     List<ScheduledDate> forThatDay = [];
     _dates.forEach((element) {
       if (element.date.day == dayy.day &&
           element.date.month == dayy.month &&
-          element.date.year == dayy.year) forThatDay.add(element);
+          element.date.year == dayy.year) {
+        forThatDay.add(element);
+      } else if (element.date.day == dayy.day &&
+          element.date.month == dayy.month &&
+          element.period == 'yearly') {
+        forThatDay.add(element);
+      } else if (element.date.day == dayy.day && element.period == 'monthly') {
+        forThatDay.add(element);
+      }
     });
     return forThatDay;
   }
 
   final Sql sql = SQLdatabase();
   Future<void> addSchedule(
-      DateTime date, String title, String description) async {
-    var schedule =
-        ScheduledDate(date: date, description: description, title: title);
+      DateTime date, String title, String description, String period) async {
+    var schedule = ScheduledDate(
+        date: date, description: description, title: title, period: period);
     await sql.insert(schedule);
     _dates.add(schedule);
   }

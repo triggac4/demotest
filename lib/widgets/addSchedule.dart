@@ -16,6 +16,16 @@ class AddSchedule extends StatefulWidget {
 class _AddScheduleState extends State<AddSchedule> {
   DateTime scheduledDate;
   TimeOfDay time = TimeOfDay.now();
+  final String monthly = 'monthly';
+  final String yearly = 'yearly';
+  final String once = 'once';
+  List<String> choosePeriod = [];
+  String period = '';
+  initState() {
+    super.initState();
+    choosePeriod = [once, yearly, monthly];
+    period = once;
+  }
 
   pickTime(context) {
     return showTimePicker(
@@ -101,7 +111,24 @@ class _AddScheduleState extends State<AddSchedule> {
               style: TextStyle(color: Colors.red),
             ),
             SizedBox(height: 5),
-            timeSelector(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                DropdownButton(
+                    items: choosePeriod.map((e) {
+                      return DropdownMenuItem<String>(
+                        value: e,
+                        child: Text(e),
+                        onTap: () => setState(() {
+                          period = e;
+                        }),
+                      );
+                    }).toList(),
+                    value: period,
+                    onChanged: (_) {}),
+                timeSelector(),
+              ],
+            ),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -127,7 +154,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         widget.day.day, time.hour, time.minute);
                     print(date);
                     await widget.chosenDate.addSchedule(
-                        date, titleController.text, desController.text);
+                        date, titleController.text, desController.text, period);
                     Navigator.of(context).pop();
                   },
                 ),

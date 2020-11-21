@@ -21,7 +21,7 @@ class SQLdatabase implements Sql {
       _database =
           await openDatabase(pathe, onCreate: (Database db, int version) {
         db.execute(
-            "CREATE TABLE scheduledTable (id TEXT PRIMARY KEY, title TEXT, description TEXT, date TEXT,positionInColor INTEGER)");
+            "CREATE TABLE scheduledTable (id TEXT PRIMARY KEY, title TEXT, description TEXT, date TEXT,positionInColor INTEGER,period TEXT)");
       }, version: 1);
     } catch (e) {
       print('error while creating');

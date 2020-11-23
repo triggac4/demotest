@@ -12,11 +12,15 @@ class ScheduledDate {
   int positionInColor;
   String period;
   static List<Color> colors = [
-    Colors.brown[200],
+    Colors.brown[600],
     Colors.blueGrey[700],
     Colors.deepOrange[500],
     Colors.orange,
-    Colors.lime[800]
+    Colors.lime[800],
+    Colors.pink,
+    Colors.purple,
+    Colors.tealAccent,
+    Colors.indigoAccent
   ];
   ScheduledDate(
       {this.key,
@@ -121,7 +125,12 @@ class AllScheduledDate extends StateNotifier<DateTime> {
         title: title,
         period: period,
         positionInColor: colorPosition);
+    int index = _dates.indexWhere((element) => id == element.key);
+    _dates.removeWhere((element) {
+      return element.key == id;
+    });
     await sql.update(schedule);
+    _dates.insert(index, schedule);
   }
 
   Future<void> addSchedule(DateTime date, String title, String description,

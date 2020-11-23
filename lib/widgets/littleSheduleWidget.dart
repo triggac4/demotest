@@ -33,8 +33,8 @@ class LittleSchedule extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                offset: Offset(1, 2),
-                blurRadius: 2,
+                offset: Offset(1, 5),
+                blurRadius: 4,
                 color: scheduledDate.color,
               )
             ]),

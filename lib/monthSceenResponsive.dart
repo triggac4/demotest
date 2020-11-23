@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 abstract class MonthDetailsResponsive extends StatelessWidget {
-  MonthDetailsResponsive({this.width});
+  MonthDetailsResponsive(this.width);
   final double width;
   Widget potrait();
 
@@ -14,7 +14,7 @@ abstract class MonthDetailsResponsive extends StatelessWidget {
 }
 
 class MonthDetailsResponse extends MonthDetailsResponsive {
-  MonthDetailsResponse({width, this.listOfWidget}) : super(width: width);
+  MonthDetailsResponse({width, this.listOfWidget}) : super(width);
   final List<Widget> listOfWidget;
 
   Widget potrait() {

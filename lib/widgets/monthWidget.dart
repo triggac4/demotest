@@ -53,6 +53,7 @@ class _MnthWidgetState extends State<MnthWidget> {
                 // ignore: invalid_use_of_protected_member
                 context.read(dazz).state = widget.chosenDates.selectedDay(day);
                 index = widget.chosenDates.firstScheduleOfTheDay(day);
+                print(day);
                 await widget.function(day, context);
               }
             : null,

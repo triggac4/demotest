@@ -30,8 +30,8 @@ class _AddScheduleState extends State<AddSchedule> {
     desController.text = widget.scheduledDate?.description ?? '';
     period = widget.scheduledDate?.period ?? once;
     time = TimeOfDay(
-        hour: widget.scheduledDate.date.hour,
-        minute: widget.scheduledDate.date.minute);
+        hour: widget.scheduledDate?.date?.hour ?? TimeOfDay.now().hour,
+        minute: widget.scheduledDate?.date?.minute ?? TimeOfDay.now().minute);
   }
 
   pickTime(context) {

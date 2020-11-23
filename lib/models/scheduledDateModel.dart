@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:demotest/models/sqlDatabase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,7 @@ class ScheduledDate {
   Color color;
   int positionInColor;
   String period;
-  List<Color> colors = [
+  static List<Color> colors = [
     Colors.brown[200],
     Colors.blueGrey[700],
     Colors.deepOrange[500],
@@ -21,17 +19,13 @@ class ScheduledDate {
     Colors.lime[800]
   ];
   ScheduledDate(
-      {this.date,
+      {this.key,
+      this.date,
       this.title,
       this.description,
-      positionInColor = -1,
+      this.positionInColor,
       this.period}) {
-    var rand = new Random();
-    if (positionInColor == -1)
-      this.positionInColor = rand.nextInt(this.colors.length);
-    else
-      this.positionInColor = positionInColor;
-    this.color = this.colors[this.positionInColor];
+    this.color = colors[this.positionInColor];
   }
   ScheduledDate.toScheduledDate(Map<String, dynamic> mapSchedule) {
     this.date = DateTime.parse(mapSchedule['date']);
@@ -39,7 +33,7 @@ class ScheduledDate {
     this.title = mapSchedule['title'];
     this.positionInColor = mapSchedule['positionInColor'];
     this.key = mapSchedule['id'];
-    this.color = this.colors[this.positionInColor];
+    this.color = colors[this.positionInColor];
     this.period = mapSchedule['period'];
   }
   Map<String, dynamic> toMap() {
@@ -117,10 +111,27 @@ class AllScheduledDate extends StateNotifier<DateTime> {
   }
 
   final Sql sql = SQLdatabase();
-  Future<void> addSchedule(
-      DateTime date, String title, String description, String period) async {
+  Future<void> updateSchedule(DateTime date, String title, String description,
+      String period, int colorPosition, String id) async {
+    print(id);
     var schedule = ScheduledDate(
-        date: date, description: description, title: title, period: period);
+        key: id,
+        date: date,
+        description: description,
+        title: title,
+        period: period,
+        positionInColor: colorPosition);
+    await sql.update(schedule);
+  }
+
+  Future<void> addSchedule(DateTime date, String title, String description,
+      String period, int colorPosition) async {
+    var schedule = ScheduledDate(
+        date: date,
+        description: description,
+        title: title,
+        period: period,
+        positionInColor: colorPosition);
     await sql.insert(schedule);
     _dates.add(schedule);
   }

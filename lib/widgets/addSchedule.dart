@@ -1,14 +1,13 @@
+import 'dart:math';
+
 import 'package:demotest/models/scheduledDateModel.dart';
 import 'package:flutter/material.dart';
 
 class AddSchedule extends StatefulWidget {
-  AddSchedule(
-    this.day,
-    this.chosenDate,
-  );
+  AddSchedule({this.day, this.chosenDate, this.scheduledDate});
   final DateTime day;
   final AllScheduledDate chosenDate;
-
+  final ScheduledDate scheduledDate;
   @override
   _AddScheduleState createState() => _AddScheduleState();
 }
@@ -21,10 +20,18 @@ class _AddScheduleState extends State<AddSchedule> {
   final String once = 'once';
   List<String> choosePeriod = [];
   String period = '';
+
   initState() {
     super.initState();
+
     choosePeriod = [once, yearly, monthly];
-    period = once;
+    colorPosition = widget.scheduledDate?.positionInColor ?? colorPosition;
+    titleController.text = widget.scheduledDate?.title ?? '';
+    desController.text = widget.scheduledDate?.description ?? '';
+    period = widget.scheduledDate?.period ?? once;
+    time = TimeOfDay(
+        hour: widget.scheduledDate.date.hour,
+        minute: widget.scheduledDate.date.minute);
   }
 
   pickTime(context) {
@@ -41,6 +48,7 @@ class _AddScheduleState extends State<AddSchedule> {
   var titleController = TextEditingController();
   var desController = TextEditingController();
   var error = '';
+
   @override
   void dispose() {
     super.dispose();
@@ -66,6 +74,42 @@ class _AddScheduleState extends State<AddSchedule> {
         Text(time.format(context)),
       ],
     );
+  }
+
+  List<int> colorPostions =
+      List.generate(ScheduledDate.colors.length, (index) => index);
+  int colorPosition = Random().nextInt(ScheduledDate.colors.length);
+
+  Future<void> _addOrEditSchedule() async {
+    var forTitle = titleController.text.isEmpty;
+    var forDes = desController.text.isEmpty || desController.text.length < 10;
+    if (forTitle || forDes) {
+      if (forTitle)
+        error = "Your Title Input Is Empty";
+      else
+        error =
+            "Your Description Field contains only ${desController.text.length} char";
+      setState(() {});
+      return;
+    }
+
+    if (widget.scheduledDate == null) {
+      var date = DateTime(widget.day.year, widget.day.month, widget.day.day,
+          time.hour, time.minute);
+
+      await widget.chosenDate.addSchedule(date, titleController.text,
+          desController.text, period, colorPosition);
+    } else {
+      var date = DateTime(
+          widget.scheduledDate.date.year,
+          widget.scheduledDate.date.month,
+          widget.scheduledDate.date.day,
+          time.hour,
+          time.minute);
+      await widget.chosenDate.updateSchedule(date, titleController.text,
+          desController.text, period, colorPosition, widget.scheduledDate.key);
+    }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -126,6 +170,30 @@ class _AddScheduleState extends State<AddSchedule> {
                     }).toList(),
                     value: period,
                     onChanged: (_) {}),
+                DropdownButton(
+                    items: colorPostions.map((index) {
+                      return DropdownMenuItem<int>(
+                        value: index,
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: ScheduledDate.colors[index],
+                          ),
+                        ),
+                        onTap: () => setState(() {
+                          colorPosition = index;
+                        }),
+                      );
+                    }).toList(),
+                    underline: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: ScheduledDate.colors[colorPosition],
+                      ),
+                    ),
+                    onChanged: (_) {}),
                 timeSelector(),
               ],
             ),
@@ -136,28 +204,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 color: Colors.orangeAccent,
                 width: double.infinity,
                 child: FlatButton(
-                  child: Icon(Icons.add),
-                  onPressed: () async {
-                    var forTitle = titleController.text.isEmpty;
-                    var forDes = desController.text.isEmpty ||
-                        desController.text.length < 10;
-                    if (forTitle || forDes) {
-                      if (forTitle)
-                        error = "Your Title Input Is Empty";
-                      else
-                        error =
-                            "Your Description Field contains only ${desController.text.length} char";
-                      setState(() {});
-                      return;
-                    }
-                    var date = DateTime(widget.day.year, widget.day.month,
-                        widget.day.day, time.hour, time.minute);
-                    print(date);
-                    await widget.chosenDate.addSchedule(
-                        date, titleController.text, desController.text, period);
-                    Navigator.of(context).pop();
-                  },
-                ),
+                    child: Icon(Icons.add), onPressed: _addOrEditSchedule),
               ),
             )
           ],

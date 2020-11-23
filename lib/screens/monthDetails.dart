@@ -21,12 +21,35 @@ class MonthDetails extends StatefulWidget {
 
 class _MonthDetailsState extends State<MonthDetails> {
   AllScheduledDate allschedule = AllScheduledDate(DateTime.now());
-  Future<void> showButtomSheetz(DateTime day, BuildContext ctx) {
+  bool bottomSheetOpen = false;
+  Future<void> showButtomSheetz(DateTime day, BuildContext context) {
+    setState(() {
+      bottomSheetOpen = true;
+    });
     return showBottomSheet(
-        context: ctx,
+        context: context,
+        builder: (context) {
+          return AddSchedule(day: day, chosenDate: allschedule);
+        }).closed.then((value) => setState(() {
+          bottomSheetOpen = false;
+        }));
+  }
+
+  editScheduleDate(ScheduledDate scheduledDate, BuildContext context) {
+    setState(() {
+      bottomSheetOpen = true;
+    });
+    var schedule = ScheduledDateProvider.of(context);
+    showBottomSheet(
+        context: context,
         builder: (ctx) {
-          return AddSchedule(day, allschedule);
-        }).closed.then((value) => setState(() {}));
+          return AddSchedule(
+            chosenDate: schedule,
+            scheduledDate: scheduledDate,
+          );
+        }).closed.then((value) => setState(() {
+          bottomSheetOpen = false;
+        }));
   }
 
   Future<void> removeScheduledDate(ScheduledDate schedule) async {
@@ -61,6 +84,7 @@ class _MonthDetailsState extends State<MonthDetails> {
               Container(
                 width: isPortrait ? null : width / 2,
                 child: MonthDetailWidget(
+                  bottomOpen: bottomSheetOpen,
                   chosenDates: allschedule,
                   month: widget.month,
                   function: showButtomSheetz,
@@ -103,8 +127,10 @@ class _MonthDetailsState extends State<MonthDetails> {
                           allschedule.forThatDay(dateee) == []
                               ? SizedBox()
                               : Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10),
                                   child: LittleSchedule(
+                                      editScheduleDate,
                                       allschedule.forThatDay(dateee)[index],
                                       removeScheduledDate))
                       ],

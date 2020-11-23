@@ -6,17 +6,25 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:intl/intl.dart';
 
 class MnthWidget extends StatefulWidget {
-  MnthWidget({this.month, this.chosenDates, this.isDetail, this.function});
+  MnthWidget(
+      {this.bottomSheetOpens,
+      this.month,
+      this.chosenDates,
+      this.isDetail,
+      this.function});
   final Month month;
   final AllScheduledDate chosenDates;
   final bool isDetail;
   final Function function;
+  final bool bottomSheetOpens;
   @override
   _MnthWidgetState createState() => _MnthWidgetState();
 }
 
 class _MnthWidgetState extends State<MnthWidget> {
-  bool bottomSheetOpen = false;
+  bool get bottomSheetOpen {
+    return widget.bottomSheetOpens;
+  }
 
   var dazz = StateNotifierProvider<AllScheduledDate>((ref) {
     return AllScheduledDate(DateTime.now());
@@ -31,7 +39,6 @@ class _MnthWidgetState extends State<MnthWidget> {
             ? () {
                 if (bottomSheetOpen) {
                   Navigator.of(context).pop();
-                  bottomSheetOpen = false;
                 }
                 // ignore: invalid_use_of_protected_member
                 context.read(dazz).state = widget.chosenDates.selectedDay(day);
@@ -45,11 +52,8 @@ class _MnthWidgetState extends State<MnthWidget> {
                 }
                 // ignore: invalid_use_of_protected_member
                 context.read(dazz).state = widget.chosenDates.selectedDay(day);
-                bottomSheetOpen = true;
-                widget.function(day, context).then((_) {
-                  bottomSheetOpen = false;
-                });
                 index = widget.chosenDates.firstScheduleOfTheDay(day);
+                await widget.function(day, context);
               }
             : null,
         child: widget.isDetail
@@ -123,13 +127,16 @@ class _MnthWidgetState extends State<MnthWidget> {
 
 class MonthDetailWidget extends MnthWidget {
   MonthDetailWidget(
-      {AllScheduledDate chosenDates, Month month, Function function})
+      {AllScheduledDate chosenDates,
+      Month month,
+      Function function,
+      bool bottomOpen})
       : super(
-          chosenDates: chosenDates,
-          isDetail: true,
-          month: month,
-          function: function,
-        );
+            chosenDates: chosenDates,
+            isDetail: true,
+            month: month,
+            function: function,
+            bottomSheetOpens: bottomOpen);
 }
 
 class MonthHomeWidget extends MnthWidget {

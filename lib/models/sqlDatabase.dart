@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 abstract class Sql {
   Future<void> insert(ScheduledDate date);
+  Future<void> update(ScheduledDate date);
   Future<List<Map<String, dynamic>>> getSchedulesFromDb();
   Future<void> delectSchedule(String id);
 }
@@ -39,6 +40,18 @@ class SQLdatabase implements Sql {
     } catch (e) {
       print('error while inserting');
       print(e);
+    }
+  }
+
+  Future<void> update(ScheduledDate schedule) async {
+    if (_database == null) {
+      await _createDatebase();
+    }
+    try {
+      await _database.rawUpdate(
+          "UPDATE scheduledTable SET title='${schedule.title}', description='${schedule.description}', date='${schedule.date.toString()}',positionInColor=${schedule.positionInColor},period='${schedule.period}' WHERE id= '${schedule.key}'");
+    } catch (e) {
+      throw e;
     }
   }
 

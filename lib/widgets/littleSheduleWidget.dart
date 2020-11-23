@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class LittleSchedule extends StatelessWidget {
-  LittleSchedule(this.scheduledDate, this.removeSchedule);
+  LittleSchedule(
+    this.editScheduleDate,
+    this.scheduledDate,
+    this.removeSchedule,
+  );
+  final Function(ScheduledDate scheduledDate, BuildContext context)
+      editScheduleDate;
   final Function removeSchedule;
   final ScheduledDate scheduledDate;
   openSchedulePage(BuildContext context) {
@@ -15,7 +21,8 @@ class LittleSchedule extends StatelessWidget {
     );
   }
 
-  build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         openSchedulePage(context);
@@ -32,13 +39,14 @@ class LittleSchedule extends StatelessWidget {
               )
             ]),
         child: Container(
-          padding: EdgeInsets.all(10),
           child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      editScheduleDate(scheduledDate, context);
+                    },
                     child: Icon(
                       Icons.edit,
                       color: Colors.black,

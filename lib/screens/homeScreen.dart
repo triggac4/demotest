@@ -3,6 +3,7 @@ import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/models/yearModel.dart';
 import 'package:demotest/screens/monthDetails.dart';
 import 'package:demotest/widgets/monthWidget.dart';
+import 'package:demotest/widgets/selectYear.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 
@@ -11,35 +12,18 @@ class Calender extends StatefulWidget {
 }
 
 class _CalenderState extends State<Calender> {
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadInitially();
-  }
-
-  bool _isLoading = false;
   Future<void> _loadInitially() async {
-    setState(() {
-      _isLoading = true;
-    });
     await ScheduledDateProvider.of(context).initialDbLoad();
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   int val = 2020;
-  List<int> years = [
-    2015,
-    2016,
-    2017,
-    2018,
-    2019,
-    2020,
-    2021,
-    2022,
-    2023,
-    2024
-  ];
+
+  changeYear(int newYear) {
+    setState(() {
+      val = newYear;
+    });
+  }
+
   Year year = Year();
   List<Month> generated = [];
 
@@ -54,39 +38,46 @@ class _CalenderState extends State<Calender> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: DropdownButton(
-          items: years.map((e) {
-            return DropdownMenuItem(
-              child: Text(e.toString()),
-              value: e,
-            );
-          }).toList(),
-          onChanged: (valu) {
-            val = valu;
-            setState(() {});
-          },
-          value: null,
-          underline: Text('$val'),
-        ),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView(children: <Widget>[
-              for (int index = 0; index < generated.length; index++)
-                InkWell(
-                    onTap: () {
-                      // ignore: invalid_use_of_protected_member
-                      context.read(provider).state = generated[index].firstDay;
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => MonthDetails(generated[index])));
-                    },
-                    child: Container(
-                        child: MonthHomeWidget(
-                      month: generated[index],
-                    )))
-            ]),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: RaisedButton(
+            child: Text("$val"),
+            padding: EdgeInsets.zero,
+            color: Theme.of(context).primaryColor,
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return SelectYear(val, changeYear);
+                  });
+            },
+          )),
+      body: FutureBuilder(
+          future: _loadInitially(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return ListView(children: <Widget>[
+                for (int index = 0; index < generated.length; index++)
+                  InkWell(
+                      onTap: () {
+                        // ignore: invalid_use_of_protected_member
+                        context.read(provider).state =
+                            generated[index].firstDay;
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => MonthDetails(generated[index])));
+                      },
+                      child: Container(
+                          child: MonthHomeWidget(
+                        month: generated[index],
+                      )))
+              ]);
+            }else{
+              return Center(child: Text('error Loading database'),);
+            }
+
+          }),
     );
   }
 }

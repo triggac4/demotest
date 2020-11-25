@@ -2,7 +2,6 @@ import 'package:demotest/models/scheduledDateModel.dart';
 import 'package:demotest/widgets/displayScheduleDetails.dart';
 import 'package:demotest/widgets/scheduleDetailDateWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ScheduleDetail extends StatelessWidget {
   ScheduleDetail(this.scheduledDate);

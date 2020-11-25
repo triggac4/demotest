@@ -3,7 +3,7 @@ import 'package:demotest/widgets/dayWidget.dart';
 import 'package:demotest/models/monthModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:intl/intl.dart';
+
 
 class MnthWidget extends StatefulWidget {
   MnthWidget(
@@ -63,7 +63,7 @@ class _MnthWidgetState extends State<MnthWidget> {
                 color: index < 0 ? null : widget.chosenDates.dates[index].color,
                 isboxShadow: index >= 0 ? true : false)
             : MonthDayWidget(
-                date: DateFormat('dd').format(day),
+                date: day.day.toString(),
               ),
       ));
     }

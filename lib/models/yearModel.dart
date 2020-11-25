@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'monthModel.dart';
 
 abstract class YearBase {
@@ -9,379 +8,100 @@ class Year implements YearBase {
   final int id;
 
   Year({this.id});
-
+@override
   List<Month> generateMonths() {
-    List<DateTime> date = [];
-    List<Month> months = [
-      Month(id: 'January'),
-      Month(id: 'Febuary'),
-      Month(id: 'March'),
-      Month(id: 'April'),
-      Month(id: 'May'),
-      Month(id: 'June'),
-      Month(id: 'July'),
-      Month(id: 'August'),
-      Month(id: 'September'),
-      Month(id: 'October'),
-      Month(id: 'November'),
-      Month(id: 'December')
-    ];
-    date = [];
+  List<DateTime> date = [];
+  List<Month> months = [
+    Month(id: 'January'),
+    Month(id: 'Febuary'),
+    Month(id: 'March'),
+    Month(id: 'April'),
+    Month(id: 'May'),
+    Month(id: 'June'),
+    Month(id: 'July'),
+    Month(id: 'August'),
+    Month(id: 'September'),
+    Month(id: 'October'),
+    Month(id: 'November'),
+    Month(id: 'December')
+  ];
+  date = [];
+
+  arrangeWeekday({List<Month> monthss,int monthIndex,DateTime date}){
+    switch (date.weekday) {
+      case 7:
+        monthss[monthIndex].dayAndDate['Sunday'].add(date);
+
+        break;
+      case 1:
+        monthss[monthIndex].dayAndDate['Monday'].add(date);
+        break;
+      case 2:
+        monthss[monthIndex].dayAndDate['Tuesday'].add(date);
+        break;
+      case 3:
+        monthss[monthIndex].dayAndDate['Wednesday'].add(date);
+        break;
+      case 4:
+    monthss[monthIndex].dayAndDate['Thursday'].add(date);
+    break;
+    case 5:
+    monthss[monthIndex].dayAndDate['Friday'].add(date);
+    break;
+    case 6:
+    monthss[monthIndex].dayAndDate['Saturday'].add(date);
+    break;
+  }
+  }
+
+
     DateTime january1 = DateTime.parse('${this.id}' + '0101');
     List.generate(367, (index) {
       if (january1.add(Duration(days: index)).year.toString() !=
           this.id.toString()) return;
 
       date.add(january1.add(Duration(days: index)));
-
-      switch (DateFormat('MM').format(date[index])) {
-        case "01":
-          if (date[index].day == 01) {
-            months[0].firstDay = date[index];
-          }
-
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[0].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[0].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[0].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[0].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[0].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[0].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[0].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
+      switch (date[index].month) {
+        case 1:
+          arrangeWeekday(monthIndex: 0,date: date[index],monthss: months);
           break;
-        case "02":
-          if (date[index].day == 01) {
-            months[1].firstDay = date[index];
-            print(date[index]);
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[1].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[1].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[1].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[1].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[1].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[1].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[1].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
+        case 2:
+          arrangeWeekday(monthIndex: 1,date: date[index],monthss: months);
 
           break;
-        case "03":
-          if (date[index].day == 01) {
-            months[2].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[2].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[2].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[2].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[2].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[2].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[2].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[2].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
+        case 3:
+          arrangeWeekday(monthIndex: 2,date: date[index],monthss: months);
+          break;
+        case 4:
+
+          arrangeWeekday(monthIndex: 3,date: date[index],monthss: months);
 
           break;
-        case "04":
-          if (date[index].day == 01) {
-            months[3].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[3].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[3].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[3].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[3].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[3].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[3].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[3].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
+        case 5:
+          arrangeWeekday(monthIndex: 4,date: date[index],monthss: months);
 
           break;
-        case "05":
-          if (date[index].day == 01) {
-            months[4].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[4].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[4].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[4].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[4].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[4].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[4].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[4].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
+        case 6:
+          arrangeWeekday(monthIndex: 5,date: date[index],monthss: months);
+          break;
+        case 7:
+          arrangeWeekday(monthIndex: 6,date: date[index],monthss: months);
+          break;
+        case 8:
+          arrangeWeekday(monthIndex: 7,date: date[index],monthss: months);
 
           break;
-        case "06":
-          if (date[index].day == 01) {
-            months[5].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[5].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[5].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[5].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[5].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[5].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[5].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[5].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
-
+        case 9:
+          arrangeWeekday(monthIndex: 8,date: date[index],monthss: months);
           break;
-        case "07":
-          if (date[index].day == 01) {
-            months[6].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[6].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[6].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[6].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[6].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[6].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[6].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[6].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
-
+        case 10:
+          arrangeWeekday(monthIndex: 9,date: date[index],monthss: months);
           break;
-        case "08":
-          if (date[index].day == 01) {
-            months[7].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[7].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[7].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[7].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[7].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[7].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[7].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[7].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
-
+        case 11:
+          arrangeWeekday(monthIndex: 10,date: date[index],monthss: months);
           break;
-        case "09":
-          if (date[index].day == 01) {
-            months[8].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[8].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[8].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[8].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[8].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[8].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[8].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[8].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
-
-          break;
-        case "10":
-          if (date[index].day == 01) {
-            months[9].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[9].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[9].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[9].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[9].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[9].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[9].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[9].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
-
-          break;
-        case "11":
-          if (date[index].day == 01) {
-            months[10].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[10].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[10].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[10].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[10].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[10].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[10].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[10].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
-
-          break;
-        case "12":
-          if (date[index].day == 01) {
-            months[11].firstDay = date[index];
-          }
-          switch (DateFormat('EEEE').format(date[index])) {
-            case 'Sunday':
-              months[11].dayAndDate['Sunday'].add(date[index]);
-              break;
-            case 'Monday':
-              months[11].dayAndDate['Monday'].add(date[index]);
-              break;
-            case 'Tuesday':
-              months[11].dayAndDate['Tuesday'].add(date[index]);
-              break;
-            case 'Wednesday':
-              months[11].dayAndDate['Wednesday'].add(date[index]);
-              break;
-            case 'Thursday':
-              months[11].dayAndDate['Thursday'].add(date[index]);
-              break;
-            case 'Friday':
-              months[11].dayAndDate['Friday'].add(date[index]);
-              break;
-            case 'Saturday':
-              months[11].dayAndDate['Saturday'].add(date[index]);
-              break;
-          }
+        case 12:
+          arrangeWeekday(monthIndex: 11,date: date[index],monthss: months);
           break;
       }
     });

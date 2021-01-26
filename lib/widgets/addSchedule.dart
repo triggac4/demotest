@@ -39,9 +39,14 @@ class _AddScheduleState extends State<AddSchedule> {
       context: context,
       initialTime: TimeOfDay.now(),
     ).then((newTime) {
-      setState(() {
-        time = newTime;
-      });
+      TimeOfDay newTi=newTime;
+      if(newTi==null){
+        return;
+      }else {
+        setState(() {
+          time = newTi;
+        });
+      }
     });
   }
 
@@ -107,109 +112,110 @@ class _AddScheduleState extends State<AddSchedule> {
           time.hour,
           time.minute);
       await widget.chosenDate.updateSchedule(date, titleController.text,
-          desController.text, period, colorPosition, widget.scheduledDate.key);
+          desController.text, period, colorPosition, widget.scheduledDate.id);
     }
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
+    return Container(
         color: Theme.of(context).primaryColor,
         height: 340 + MediaQuery.of(context).viewInsets.bottom,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                      color: Colors.white,
-                    )),
-                    border: OutlineInputBorder(),
-                    hintText: "Schedule Title"),
-                controller: titleController,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                        color: Colors.white,
+                      )),
+                      border: OutlineInputBorder(),
+                      hintText: "Schedule Title"),
+                  controller: titleController,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                minLines: 4,
-                maxLines: 10,
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                      color: Colors.white,
-                    )),
-                    border: OutlineInputBorder(),
-                    hintText: "Description"),
-                controller: desController,
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  minLines: 4,
+                  maxLines: 10,
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                        color: Colors.white,
+                      )),
+                      border: OutlineInputBorder(),
+                      hintText: "Description"),
+                  controller: desController,
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              error,
-              style: TextStyle(color: Colors.red),
-            ),
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                DropdownButton(
-                    items: choosePeriod.map((e) {
-                      return DropdownMenuItem<String>(
-                        value: e,
-                        child: Text(e),
-                        onTap: () => setState(() {
-                          period = e;
-                        }),
-                      );
-                    }).toList(),
-                    value: period,
-                    onChanged: (_) {}),
-                DropdownButton(
-                    items: colorPostions.map((index) {
-                      return DropdownMenuItem<int>(
-                        value: index,
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: ScheduledDate.colors[index],
+              SizedBox(height: 10),
+              Text(
+                error,
+                style: TextStyle(color: Colors.red),
+              ),
+              SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  DropdownButton(
+                      items: choosePeriod.map((e) {
+                        return DropdownMenuItem<String>(
+                          value: e,
+                          child: Text(e),
+                          onTap: () => setState(() {
+                            period = e;
+                          }),
+                        );
+                      }).toList(),
+                      value: period,
+                      onChanged: (_) {}),
+                  DropdownButton(
+                      items: colorPostions.map((index) {
+                        return DropdownMenuItem<int>(
+                          value: index,
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: ScheduledDate.colors[index],
+                            ),
                           ),
+                          onTap: () => setState(() {
+                            colorPosition = index;
+                          }),
+                        );
+                      }).toList(),
+                      underline: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: ScheduledDate.colors[colorPosition],
                         ),
-                        onTap: () => setState(() {
-                          colorPosition = index;
-                        }),
-                      );
-                    }).toList(),
-                    underline: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: ScheduledDate.colors[colorPosition],
                       ),
-                    ),
-                    onChanged: (_) {}),
-                timeSelector(),
-              ],
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Container(
-                color: Colors.orangeAccent,
-                width: double.infinity,
-                child: FlatButton(
-                    child: Icon(Icons.add), onPressed: _addOrEditSchedule),
+                      onChanged: (_) {}),
+                  timeSelector(),
+                ],
               ),
-            )
-          ],
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Container(
+                  color: Colors.orangeAccent,
+                  width: double.infinity,
+                  child: FlatButton(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      child: Icon(Icons.add), onPressed: _addOrEditSchedule),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }

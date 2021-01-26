@@ -18,6 +18,7 @@ class ScheduleDetailDate extends StatelessWidget {
     return Container(
       height: screenHeight / 8,
       width: screenWidth / 1.5,
+      constraints: BoxConstraints(minWidth:screenWidth / 1.5,minHeight: screenHeight / 8),
       decoration: BoxDecoration(
           color: scheduledDate.color.withOpacity(0.7),
           borderRadius: BorderRadius.circular(50)),
@@ -25,15 +26,13 @@ class ScheduleDetailDate extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: Text(
+               Text(
                 DateFormat('EEEE').format(scheduledDate.date),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 35,
+                    fontSize: 25,
                     color: Theme.of(context).primaryColorDark),
-              ),
+
             ),
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -48,7 +47,7 @@ class ScheduleDetailDate extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 0, bottom: 5),
+                  padding: EdgeInsets.only(bottom: 5),
                   child: Text(
                     DateFormat('hh:mm a').format(scheduledDate.date),
                     style: TextStyle(fontSize: 15, color: Colors.grey[800]),

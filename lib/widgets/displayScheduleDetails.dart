@@ -1,46 +1,37 @@
+import 'package:demotest/models/scheduledDateModel.dart';
+import 'package:demotest/widgets/scheduleDetailTitleDescriptionWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DisplayScheduleDetail extends StatelessWidget {
   DisplayScheduleDetail(
-      {@required this.description,
-      @required this.title,
-      @required this.color,
-      @required this.screenHeight})
-      : assert(description != null),
-        assert(title != null);
+      {
+        @required this.scheduledDate,
+        @required this.screenHeight, this.screenWidth,
+      })
+      : assert(scheduledDate != null);
   final double screenHeight;
-  final String title;
-  final String description;
-  final Color color;
+  final ScheduledDate scheduledDate;
+  final screenWidth;
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        border: Border.all(color: color, width: 2),
         borderRadius: BorderRadius.circular(50),
       ),
-      child: SingleChildScrollView(
-        child: Column(
+      child:Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: (screenHeight / 16) + 40,
+              height:screenHeight ,
             ),
-            Text(
-              title,
-              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: (screenHeight / 16) + 20,
-            ),
-            Text(
-              description,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
-              textAlign: TextAlign.center,
-            ),
+            ScheduleDetailTitleDescriptionWidget(title: 'Title',width: screenWidth,text: scheduledDate.title,),
+            ScheduleDetailTitleDescriptionWidget(title: 'Date',width: screenWidth,text: DateFormat('${scheduledDate.date.day} MMMM yyyy').format(scheduledDate.date)),
+            ScheduleDetailTitleDescriptionWidget(title:'Time',width: screenWidth,text: DateFormat('hh:mm a').format(scheduledDate.date)),
+            ScheduleDetailTitleDescriptionWidget(title: 'Description',width: screenWidth,text: scheduledDate.description,),
           ],
         ),
-      ),
-    );
+      );
   }
 }

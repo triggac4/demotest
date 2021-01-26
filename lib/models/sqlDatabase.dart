@@ -22,7 +22,7 @@ class SQLdatabase implements Sql {
       _database =
           await openDatabase(pathe, onCreate: (Database db, int version) {
         db.execute(
-            "CREATE TABLE scheduledTable (id TEXT PRIMARY KEY, title TEXT, description TEXT, date TEXT,positionInColor INTEGER,period TEXT)");
+            "CREATE TABLE scheduledTable (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date TEXT,positionInColor INTEGER,period TEXT)");
       }, version: 1);
     } catch (e) {
       print('error while creating');
@@ -49,7 +49,7 @@ class SQLdatabase implements Sql {
     }
     try {
       await _database.rawUpdate(
-          "UPDATE scheduledTable SET title='${schedule.title}', description='${schedule.description}', date='${schedule.date.toString()}',positionInColor=${schedule.positionInColor},period='${schedule.period}' WHERE id= '${schedule.key}'");
+          "UPDATE scheduledTable SET title='${schedule.title}', description='${schedule.description}', date='${schedule.date.toString()}',positionInColor=${schedule.positionInColor},period='${schedule.period}' WHERE id= '${schedule.id}'");
     } catch (e) {
       throw e;
     }

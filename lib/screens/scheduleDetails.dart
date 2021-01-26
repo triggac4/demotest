@@ -22,41 +22,31 @@ class ScheduleDetail extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          Stack(
-              alignment: Alignment.center,
-              overflow: Overflow.visible,
-              children: [
-                Container(
-                  alignment: Alignment.topCenter,
-                  width: double.infinity,
-                  height: screenHeight / 5,
-                  decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(50),
-                          bottomRight: Radius.circular(50))),
-                  child: Image.asset("images/calendar-pngrepo-com.png"),
-                ),
-                Positioned(
-                    bottom: -screenHeight / 16,
-                    child: ScheduleDetailDate(
-                        screenHeight: screenHeight,
-                        screenWidth: screenWidth,
-                        scheduledDate: scheduledDate))
-              ]),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 6),
-            child: DisplayScheduleDetail(
-              screenHeight: screenHeight,
-              description: scheduledDate.description,
-              title: scheduledDate.title,
-              color: scheduledDate.color,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              alignment: Alignment.topCenter,
+              width: double.infinity,
+              height: screenHeight / 5,
+              decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50))),
+              child: Image.asset("images/calendar-pngrepo-com.png"),
             ),
-          ))
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20),
+              child: DisplayScheduleDetail(
+            scheduledDate: scheduledDate,
+            screenWidth:screenWidth,
+            screenHeight: screenHeight/30,
+              ),
+            )
+          ],
+        ),
       ),
       backgroundColor: Colors.white,
     );

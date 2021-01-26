@@ -18,14 +18,18 @@ class MonthDetailsResponse extends MonthDetailsResponsive {
   final List<Widget> listOfWidget;
 
   Widget potrait() {
-    return Column(
-      children: listOfWidget,
+    return SingleChildScrollView(
+      child: Column(
+        children: listOfWidget,
+      ),
     );
   }
 
   Widget landscape() {
-    return Row(
+    return SingleChildScrollView(
+        child:Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: listOfWidget,
-    );
+    ));
   }
 }

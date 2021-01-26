@@ -20,17 +20,22 @@ class MonthDetails extends StatefulWidget {
 class _MonthDetailsState extends State<MonthDetails> {
   AllScheduledDate allschedule = AllScheduledDate(DateTime.now());
   bool bottomSheetOpen = false;
-  Future<void> showButtomSheetz(DateTime day, BuildContext context) {
+  PersistentBottomSheetController _controller;
+  bool isDisposed=false;
+  void dispose(){
+    isDisposed=true;
+    super.dispose();
+  }
+
+  PersistentBottomSheetController showButtomSheetz(DateTime day, BuildContext context) {
     setState(() {
       bottomSheetOpen = true;
     });
-    return showBottomSheet(
-        context: context,
-        builder: (context) {
+    final _controller= Scaffold.of(context).showBottomSheet(
+        (context) {
           return AddSchedule(day: day, chosenDate: allschedule);
-        }).closed.then((value) => setState(() {
-          bottomSheetOpen = false;
-        }));
+        })..closed.then((value) =>isDisposed?null:bottomBarClosed());
+    return _controller;
   }
 
   editScheduleDate(ScheduledDate scheduledDate, BuildContext context) {
@@ -45,70 +50,61 @@ class _MonthDetailsState extends State<MonthDetails> {
             chosenDate: schedule,
             scheduledDate: scheduledDate,
           );
-        }).closed.then((value) => setState(() {
-          bottomSheetOpen = false;
-        }));
+        }).closed.then((value) =>isDisposed?null: bottomBarClosed());
   }
 
   Future<void> removeScheduledDate(ScheduledDate schedule) async {
     await allschedule.removeSchedule(schedule).then((value) => setState(() {}));
   }
-
+ void bottomBarClosed(){
+ setState(() {
+   bottomSheetOpen = false;
+ });
+ }
   var datee = DateTime.now();
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     double width = mediaQuery.size.width;
-    bool isPortrait = mediaQuery.orientation == Orientation.portrait;
+    bool isPortrait = width<700;
 
     allschedule = ScheduledDateProvider.of(context);
     var dayprovider = StateNotifierProvider((ref) {
       return allschedule;
     });
-    return Scaffold(
-      appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
+    return  SizedBox(
+        height: mediaQuery.size.height - 50,
+        child: MonthDetailsResponse(
+          listOfWidget: [
+            Container(
+              width: isPortrait ? null : width / 2,
+              child: MonthDetailWidget(
+                bottomOpen: bottomSheetOpen,
+                chosenDates: allschedule,
+                month: widget.month,
+                function: showButtomSheetz,
+              ),
             ),
-          )),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: mediaQuery.size.height - 50,
-          child: MonthDetailsResponse(
-            listOfWidget: [
-              Container(
-                width: isPortrait ? null : width / 2,
-                child: MonthDetailWidget(
-                  bottomOpen: bottomSheetOpen,
-                  chosenDates: allschedule,
-                  month: widget.month,
-                  function: showButtomSheetz,
-                ),
-              ),
-              SizedBox(
-                height: isPortrait ? 10 : null,
-                width: isPortrait ? null : 10,
-              ),
-              Expanded(child: Consumer(
-                builder: (cxt, watch, child) {
-                  var dateee = watch(dayprovider.state);
-                  return AllSchedulesWidget(
-                    allschedule: allschedule,
-                    dateee: dateee,
-                    editScheduleDate: editScheduleDate,
-                    removeScheduledDate: removeScheduledDate,
-                  );
-                },
-              ))
-            ],
-            width: width,
-          ),
+
+            SizedBox(
+              height: isPortrait ? 10 : null,
+              width: isPortrait ? null : 10,
+            ),
+            Consumer(
+              builder: (cxt, watch, child) {
+                var dateee = watch(dayprovider.state);
+                return AllSchedulesWidget(
+                  closedButtomBar:bottomBarClosed,
+                  allschedule: allschedule,
+                  dateee: dateee,
+                  editScheduleDate: editScheduleDate,
+                  removeScheduledDate: removeScheduledDate,
+                );
+              },
+            )
+          ],
+          width: width,
         ),
-      ),
-    );
+      );
   }
 }

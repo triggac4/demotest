@@ -2,6 +2,7 @@ import 'package:demotest/models/monthModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/models/yearModel.dart';
 import 'package:demotest/screens/monthDetails.dart';
+import 'package:demotest/screens/scaffoldButtomBar.dart';
 import 'package:demotest/widgets/monthWidget.dart';
 import 'package:demotest/widgets/selectYear.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class _CalenderState extends State<Calender> {
     await ScheduledDateProvider.of(context).initialDbLoad();
   }
 
-  int val = 2020;
+  int val = DateTime.now().year;
 
   changeYear(int newYear) {
     setState(() {
@@ -66,7 +67,7 @@ class _CalenderState extends State<Calender> {
                         context.read(provider).state =
                             generated[index].firstDay;
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => MonthDetails(generated[index])));
+                            builder: (_) =>ScaffoldButtomBar(month:generated[index])));
                       },
                       child: Container(
                           child: MonthHomeWidget(

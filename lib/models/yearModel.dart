@@ -13,7 +13,7 @@ class Year implements YearBase {
   List<DateTime> date = [];
   List<Month> months = [
     Month(id: 'January'),
-    Month(id: 'Febuary'),
+    Month(id: 'February'),
     Month(id: 'March'),
     Month(id: 'April'),
     Month(id: 'May'),
@@ -27,33 +27,34 @@ class Year implements YearBase {
   ];
   date = [];
 
-  arrangeWeekday({List<Month> monthss,int monthIndex,DateTime date}){
+  arrangeWeekday({Month month,DateTime date}){
+   if(date.day==1){
+     month.firstDay=date;
+   }
     switch (date.weekday) {
       case 7:
-        monthss[monthIndex].dayAndDate['Sunday'].add(date);
-
+        month.dayAndDate['Sunday'].add(date);
         break;
       case 1:
-        monthss[monthIndex].dayAndDate['Monday'].add(date);
+        month.dayAndDate['Monday'].add(date);
         break;
       case 2:
-        monthss[monthIndex].dayAndDate['Tuesday'].add(date);
+        month.dayAndDate['Tuesday'].add(date);
         break;
       case 3:
-        monthss[monthIndex].dayAndDate['Wednesday'].add(date);
+        month.dayAndDate['Wednesday'].add(date);
         break;
       case 4:
-    monthss[monthIndex].dayAndDate['Thursday'].add(date);
+    month.dayAndDate['Thursday'].add(date);
     break;
     case 5:
-    monthss[monthIndex].dayAndDate['Friday'].add(date);
+    month.dayAndDate['Friday'].add(date);
     break;
     case 6:
-    monthss[monthIndex].dayAndDate['Saturday'].add(date);
+    month.dayAndDate['Saturday'].add(date);
     break;
   }
   }
-
 
     DateTime january1 = DateTime.parse('${this.id}' + '0101');
     List.generate(367, (index) {
@@ -63,47 +64,49 @@ class Year implements YearBase {
       date.add(january1.add(Duration(days: index)));
       switch (date[index].month) {
         case 1:
-          arrangeWeekday(monthIndex: 0,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[0]);
           break;
         case 2:
-          arrangeWeekday(monthIndex: 1,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[1]);
 
           break;
         case 3:
-          arrangeWeekday(monthIndex: 2,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[2]);
           break;
         case 4:
 
-          arrangeWeekday(monthIndex: 3,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[3]);
 
           break;
         case 5:
-          arrangeWeekday(monthIndex: 4,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[4]);
 
           break;
         case 6:
-          arrangeWeekday(monthIndex: 5,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[5]);
           break;
         case 7:
-          arrangeWeekday(monthIndex: 6,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[6]);
           break;
         case 8:
-          arrangeWeekday(monthIndex: 7,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[7]);
 
           break;
         case 9:
-          arrangeWeekday(monthIndex: 8,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[8]);
           break;
         case 10:
-          arrangeWeekday(monthIndex: 9,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[9]);
           break;
         case 11:
-          arrangeWeekday(monthIndex: 10,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[10]);
           break;
         case 12:
-          arrangeWeekday(monthIndex: 11,date: date[index],monthss: months);
+          arrangeWeekday(date: date[index],month: months[11]);
           break;
+
       }
+
     });
 
     print('generated');

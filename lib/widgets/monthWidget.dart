@@ -54,16 +54,16 @@ class _MnthWidgetState extends State<MnthWidget> {
                 context.read(dazz).state = widget.chosenDates.selectedDay(day);
                 index = widget.chosenDates.firstScheduleOfTheDay(day);
                 print(day);
-                await widget.function(day, context);
+                widget.function(day, context);
               }
             : null,
         child: widget.isDetail
             ? MonthDetailDayWidget(
                 date: day,
                 color: index < 0 ? null : widget.chosenDates.dates[index].color,
-                isboxShadow: index >= 0 ? true : false)
+                hasSchedule: index >= 0 ? true : false)
             : MonthDayWidget(
-                date: day.day.toString(),
+                date: day,
               ),
       ));
     }
@@ -75,7 +75,7 @@ class _MnthWidgetState extends State<MnthWidget> {
         style: TextStyle(color: isSun ? Colors.red : Colors.black),
       ),
       weekday[0].day > widget.month.dayAndDate['Saturday'][0].day
-          ? DateWidget(date: Text(''))
+          ? DateWidget(date:null)
           : SizedBox(height: 0),
       ...daywidgets,
       weekday[weekday.length - 1].day >
@@ -85,7 +85,7 @@ class _MnthWidgetState extends State<MnthWidget> {
                       [widget.month.dayAndDate['Saturday'].length - 1]
                   .day
           ? SizedBox()
-          : DateWidget(date: Text('')),
+          : DateWidget(date: null),
     ]);
   }
 

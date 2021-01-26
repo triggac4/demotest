@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Month {
   final String id;
   DateTime firstDay = DateTime.now();
@@ -10,5 +12,6 @@ class Month {
     'Friday': [],
     'Saturday': []
   };
-  Month({this.id});
+  Month({@required this.id}):assert(id!=null);
+
 }

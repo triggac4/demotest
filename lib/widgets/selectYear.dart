@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 class SelectYear extends StatefulWidget {
   SelectYear(this.currentYear,this.changeYear);
@@ -66,6 +65,7 @@ int currentYear;
 
 var currentYearz=currentYear.toString();
     return SimpleDialog(
+
 shape: RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(10)
 ),
@@ -78,14 +78,22 @@ shape: RoundedRectangleBorder(
               changeYearValue(currentYearz.substring(1,2),100),
               changeYearValue(currentYearz.substring(2,3),10),
               changeYearValue(currentYearz.substring(3),1),
-              FlatButton(onPressed: (){
-                widget.changeYear(currentYear);
-                Navigator.of(context).pop();
-              }, child: Text('change'),
-              color: Theme.of(context).primaryColor,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FlatButton(onPressed: (){
+                    widget.changeYear(currentYear);
+                    Navigator.of(context).pop();
+                  }, child: Text('change'),
+                  color: Theme.of(context).primaryColor,
+                  ),
+                  FlatButton(onPressed: ()=>
+                    Navigator.of(context).pop()
+                  , child: Text('cancel'),
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ],
               ),
-
-
             ],
           ),
 

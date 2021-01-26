@@ -5,16 +5,18 @@ import 'package:intl/intl.dart';
 
 class LittleSchedule extends StatelessWidget {
   LittleSchedule(
+      this.closedButtomBar,
     this.editScheduleDate,
     this.scheduledDate,
     this.removeSchedule,
   );
   final Function(ScheduledDate scheduledDate, BuildContext context)
       editScheduleDate;
+  final Function closedButtomBar;
   final Function removeSchedule;
   final ScheduledDate scheduledDate;
   openSchedulePage(BuildContext context) {
-    Navigator.of(context).push(
+    Navigator.of(context,rootNavigator: true).push(
       MaterialPageRoute(builder: (context) {
         return ScheduleDetail(scheduledDate);
       }),
@@ -23,40 +25,47 @@ class LittleSchedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color primaryColor=Theme.of(context).primaryColor;
     return InkWell(
       onTap: () {
+        closedButtomBar();
         openSchedulePage(context);
       },
       child: Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color:
+            Colors.grey[200],
             borderRadius: BorderRadius.circular(20),
             boxShadow: <BoxShadow>[
               BoxShadow(
                 offset: Offset(1, 5),
                 blurRadius: 4,
-                color: scheduledDate.color,
+                color:Colors.grey[700],
               )
             ]),
         child: Container(
+          height: 80,
           child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                FlatButton(
-                    onPressed: () {
-                      editScheduleDate(scheduledDate, context);
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.black,
-                    )),
-                Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20),
+                        bottomLeft: Radius.circular(20)
+                    ),
+                    color:scheduledDate.color
+                ),
+                width: 20,
+              ),
+              Container(
+                constraints: BoxConstraints(maxWidth: 100,maxHeight: 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
+                   SizedBox(width: 10,),
                     Text(
-                      scheduledDate.title,
+                      scheduledDate.title.length>30?'${scheduledDate.title.substring(0,26)}...':scheduledDate.title,
                       style: TextStyle(color: Colors.black),
                     ),
                     Text(DateFormat('hh:mm').format(scheduledDate.date),
@@ -66,13 +75,31 @@ class LittleSchedule extends StatelessWidget {
                             color: Colors.black45))
                   ],
                 ),
-                FlatButton(
-                    onPressed: () => removeSchedule(scheduledDate),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    )),
-              ]),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        editScheduleDate(scheduledDate, context);
+                      },
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        Icons.edit,
+                        color:primaryColor,
+                      )),
+                  IconButton(
+                      onPressed: () => removeSchedule(scheduledDate),
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      )),
+                ],
+              ),
+                ],
+              ),
         ),
       ),
     );

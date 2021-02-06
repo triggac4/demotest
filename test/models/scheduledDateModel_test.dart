@@ -12,7 +12,7 @@ void main(){
     test('scheduledDate from map',(){
       ScheduledDate schedule=ScheduledDate.toScheduledDate({'description':'describe',
         'date':"2020-03-11 09:15:00",'title':'test','positionInColor':2,
-        'id':'123','period':'monthly'
+        'id':'123','period':'monthly','dateEnd':'101'
       });
 
       expect(schedule,ScheduledDate(title: 'test',description: 'describe',
@@ -23,7 +23,7 @@ void main(){
     test('to map',(){
       ScheduledDate schedule=ScheduledDate.toScheduledDate({'description':'describe',
         'date':"2020-03-11 09:15:00",'title':'test','positionInColor':2,
-        'id':'123','period':'monthly'
+        'id':'123','period':'monthly','dateEnd':'101'
       });
       expect(schedule.toMap()['id'],'123' );
         });

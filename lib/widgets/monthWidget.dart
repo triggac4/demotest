@@ -85,7 +85,7 @@ class _MnthWidgetState extends State<MnthWidget> {
                       [widget.month.dayAndDate['Saturday'].length - 1]
                   .day
           ? SizedBox()
-          : DateWidget(date: null),
+          : DateWidget(date: null,),
     ]);
   }
 

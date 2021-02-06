@@ -6,8 +6,11 @@ import 'package:sqflite/sqflite.dart';
 
 abstract class Sql {
   Future<void> insert(ScheduledDate date);
+
   Future<void> update(ScheduledDate date);
+
   Future<List<Map<String, dynamic>>> getSchedulesFromDb();
+
   Future<void> delectSchedule(String id);
 }
 
@@ -22,14 +25,14 @@ class SQLdatabase implements Sql {
       _database =
           await openDatabase(pathe, onCreate: (Database db, int version) {
         db.execute(
-            "CREATE TABLE scheduledTable (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date TEXT,positionInColor INTEGER,period TEXT)");
+            "CREATE TABLE scheduledTable (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date TEXT,dateEnd TEXT, positionInColor INTEGER,period TEXT)");
       }, version: 1);
     } catch (e) {
       print('error while creating');
       print(e);
     }
   }
-
+@override
   Future<void> insert(ScheduledDate date) async {
     if (_database == null) {
       await _createDatebase();
@@ -38,40 +41,48 @@ class SQLdatabase implements Sql {
       final db = _database;
       await db.insert("scheduledTable", date.toMap());
     } catch (e) {
-      print('error while inserting');
-      print(e);
+      rethrow;
     }
   }
-
+@override
   Future<void> update(ScheduledDate schedule) async {
     if (_database == null) {
       await _createDatebase();
     }
     try {
-      await _database.rawUpdate(
-          "UPDATE scheduledTable SET title='${schedule.title}', description='${schedule.description}', date='${schedule.date.toString()}',positionInColor=${schedule.positionInColor},period='${schedule.period}' WHERE id= '${schedule.id}'");
+       // _database.rawUpdate(
+       //    "UPDATE scheduledTable SET title='${schedule.title}', description='${schedule.description}', date='${schedule.date.toString()}',positionInColor=${schedule.positionInColor},period='${schedule.period}',dateEnd='${schedule.dateEnd.together}' WHERE id=${schedule.id}");
+       await _database.update('scheduledTable', schedule.toMap(),where:'id=${schedule.id}',);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
-
+  @override
   Future<List<Map<String, dynamic>>> getSchedulesFromDb() async {
     if (_database == null) {
       await _createDatebase();
     }
-    final schedules = await _database.rawQuery('SELECT * FROM scheduledTable');
-    if (schedules == null) {
-      return [];
-    } else
-      return schedules;
+    try {
+      final schedules =
+          await _database.rawQuery('SELECT * FROM scheduledTable');
+      if (schedules == null) {
+        return [];
+      } else
+        return schedules;
+    } catch (e) {
+      rethrow;
+    }
   }
-
+@override
   Future<void> delectSchedule(String id) async {
+    if (_database == null) {
+      await _createDatebase();
+    }
     try {
       await _database.rawDelete("DELETE FROM scheduledTable WHERE id='$id'");
     } catch (e) {
       print('thrown');
-      throw e;
+      rethrow;
     }
   }
 }

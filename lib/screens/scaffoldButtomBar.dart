@@ -45,20 +45,26 @@ String page;
           )
 
       ),
-      body: tabView[page],
+      body: Column(
+        children: [
+          Expanded(child: tabView[page]),
+          
+          BottomNavigationBar(items: tabBar(),onTap: (index){
+            setState(() {
+              pageIndex=index;
+              page=index==0?'homeScreen':'scheduleScreen';
+            });
+          },
 
-      bottomNavigationBar: BottomNavigationBar(items: tabBar(),onTap: (index){
-        setState(() {
-    pageIndex=index;
-    page=index==0?'homeScreen':'scheduleScreen';
-  });
-      },
+            selectedFontSize: 20,
+            selectedIconTheme: IconThemeData(color:Theme.of(context).primaryColor,size: 30),
+            currentIndex:pageIndex,
 
-        selectedFontSize: 20,
-        selectedIconTheme: IconThemeData(color:Theme.of(context).primaryColor,size: 30),
-      currentIndex:pageIndex,
-
+          ),
+        ],
       ),
+
+
     );
   }
 

@@ -4,6 +4,48 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 
+class LengthOfSchedule{
+   int hour;
+  int minutes;
+  int together;
+  LengthOfSchedule({this.hour, this.minutes}){
+    if(minutes.toString().length==1) {
+      together = int.parse("$hour" +"0"+"$minutes");
+    }else{
+      together = int.parse("$hour$minutes");
+    }
+  }
+   LengthOfSchedule.together({this.together}){
+     final los=hoursToString(together);
+     hour=los.hour;
+     minutes=los.minutes;
+   }
+   LengthOfSchedule hoursToString(int value){
+     LengthOfSchedule los=LengthOfSchedule(hour: 0,minutes: 0);
+     String stringValue=value.toString();
+     switch(stringValue.length){
+       case 1:
+         los=LengthOfSchedule(hour: 0,minutes:value );
+         break;
+       case 2:
+         los=LengthOfSchedule(hour: 0,minutes:value );
+         break;
+       case 3:
+         int endMins=int.parse(stringValue.substring(1,3));
+         int endHours=int.parse(stringValue.substring(0,1));
+
+         los=LengthOfSchedule(hour: endHours,minutes:endMins);
+         break;
+       case 4:
+         int endMins=int.parse(stringValue.substring(2,4));
+         int endHours=int.parse(stringValue.substring(0,2));
+         los=LengthOfSchedule(hour: endHours,minutes:endMins);
+         break;
+     }
+     return los;
+   }
+
+}
 class ScheduledDate {
   String id = UniqueKey().toString();
   String title;
@@ -12,6 +54,7 @@ class ScheduledDate {
   Color color;
   int positionInColor;
   String period;
+  LengthOfSchedule dateEnd;
   static List<Color> colors = [
     Colors.brown[600],
     Colors.blueGrey[700],
@@ -25,7 +68,7 @@ class ScheduledDate {
   ];
   ScheduledDate(
       {this.id,
-      this.date,
+      this.date, this.dateEnd,
       @required this.title,
       @required this.description,
       @required this.positionInColor,
@@ -33,6 +76,7 @@ class ScheduledDate {
     this.color =this.positionInColor>colors.length-1?Colors.blueAccent:colors[this.positionInColor];
   }
   ScheduledDate.toScheduledDate(Map<String, dynamic> mapSchedule) {
+    this.dateEnd=LengthOfSchedule.together(together: int.parse(mapSchedule['dateEnd']));
     this.date = DateTime.parse(mapSchedule['date']);
     this.description = mapSchedule['description'];
     this.title = mapSchedule['title'];
@@ -48,7 +92,8 @@ class ScheduledDate {
       'description': description,
       'date': date.toString(),
       'positionInColor': positionInColor,
-      'period': period
+      'period': period,
+      'dateEnd':dateEnd.together
     };
   }
   @override
@@ -66,7 +111,6 @@ class ScheduledDate {
           &&this.description==compare.description;
     }
 
-    return super == other;
   }
 }
 
@@ -108,15 +152,16 @@ void addTodates(ScheduledDate schedule){
   }
 
   Future<void> initialDbLoad() async {
-    Sql sql = SQLdatabase();
     try {
       _dates = [];
       final scheduleList = await sql.getSchedulesFromDb();
 
       scheduleList.forEach((element) {
         final shh = ScheduledDate.toScheduledDate(element);
+        print(shh.id);
         _dates.add(shh);
       });
+      print(_dates[0].title);
     } catch (e) {
       print(e);
     }
@@ -151,51 +196,63 @@ List<ScheduledDate> forThatMonth(Month month){
     });
     return forThatDay;
   }
-
-  final Sql sql = SQLdatabase();
-  Future<void> updateSchedule(DateTime date, String title, String description,
+  Sql sql = SQLdatabase();
+  Future<void> updateSchedule(DateTime date,LengthOfSchedule los ,String title, String description,
       String period, int colorPosition, String id) async {
-    print(id);
     var schedule = ScheduledDate(
         id: id,
+        dateEnd: los,
         date: date,
         description: description,
         title: title,
         period: period,
         positionInColor: colorPosition);
     int index = _dates.indexWhere((element) => id == element.id);
+    if(index==-1)return;
+    ScheduledDate beforeUpdate=_dates[index];
     _dates.removeWhere((element) {
       return element.id == id;
     });
-    await sql.update(schedule);
-    _dates.insert(index, schedule);
+    try {
+      await sql.update(schedule);
+      _dates.insert(index, schedule);
+    }catch(e){
+      print(e);
+      _dates.insert(index, beforeUpdate);
+    }
   }
 
-  Future<void> addSchedule(DateTime date, String title, String description,
+  Future<void> addSchedule(DateTime date,LengthOfSchedule los, String title, String description,
       String period, int colorPosition) async {
     var schedule = ScheduledDate(
+        dateEnd: los,
         date: date,
         description: description,
         title: title,
         period: period,
         positionInColor: colorPosition);
-    await sql.insert(schedule);
-    _dates.add(schedule);
+    try {
+      await sql.insert(schedule);
+      _dates.add(schedule);
+    }catch(e){
+      print(e);
+    }
   }
 
   Future<void> removeSchedule(ScheduledDate schedule) async {
     int index = _dates.indexWhere((element) => schedule.id == element.id);
     print(index);
+    if(index==-1)return;
     final removed = schedule;
     _dates.removeWhere((element) {
       return element.id == schedule.id;
     });
     try {
       await sql.delectSchedule(schedule.id);
-    } catch (e) {
+    } catch (e){
       print(e);
       if (index >= 0) {
-        _dates.insertAll(index, [removed]);
+        _dates.insert(index, removed);
       }
     }
   }

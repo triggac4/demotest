@@ -29,10 +29,16 @@ class IsDetailed extends StatelessWidget {
         bool isEqual = (datee.year == date.year) &&
             (datee.month == date.month) &&
             (datee.day == date.day);
+        Color borderColor;
+        if(today){
+          borderColor=isEqual?Colors.white:Colors.black;
+        }else{
+          borderColor=isEqual?Colors.black:Colors.white;
+        }
         return Container(
                 constraints: BoxConstraints(minHeight: 35, minWidth: 35),
                 decoration: BoxDecoration(
-                    border: Border.all(color:isEqual? Colors.black:Colors.white, width: 1),
+                    border: Border.all(color:borderColor, width: 1),
                     borderRadius: BorderRadius.circular(30)),
                 alignment: Alignment.center,
                 child: Column(
@@ -64,7 +70,7 @@ class IsDetailed extends StatelessWidget {
 }
 
 class DateWidget extends StatelessWidget {
-  DateWidget({this.color,this.date, @required this.dateWidget, this.shadow,this.isDetailed=false});
+  DateWidget({this.color,this.date, this.dateWidget, this.shadow,this.isDetailed=false});
   final List<BoxShadow> shadow;
   final Color color;
   final Widget dateWidget;

@@ -20,7 +20,6 @@ class MonthDetails extends StatefulWidget {
 class _MonthDetailsState extends State<MonthDetails> {
   AllScheduledDate allschedule = AllScheduledDate(DateTime.now());
   bool bottomSheetOpen = false;
-  PersistentBottomSheetController _controller;
   bool isDisposed=false;
   void dispose(){
     isDisposed=true;

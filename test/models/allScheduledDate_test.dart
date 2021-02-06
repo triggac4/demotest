@@ -53,7 +53,4 @@ void main() {
         expect(allSchedule.forThatMonth(null).length, 0);
         });
   });
-  group('database methods',(){
-
-  });
 }

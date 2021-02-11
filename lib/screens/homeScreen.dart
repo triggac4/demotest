@@ -1,13 +1,13 @@
 import 'package:demotest/models/monthModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/models/yearModel.dart';
-import 'package:demotest/screens/monthDetails.dart';
 import 'package:demotest/screens/scaffoldButtomBar.dart';
 import 'package:demotest/widgets/monthWidget.dart';
 import 'package:demotest/widgets/selectYear.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 class Calender extends StatefulWidget {
   _CalenderState createState() => _CalenderState();
 }
@@ -24,7 +24,10 @@ class _CalenderState extends State<Calender> {
       val = newYear;
     });
   }
-
+var nigeria=tz.local;
+  initState() {
+    super.initState();
+  }
   Year year = Year();
   List<Month> generated = [];
 
@@ -67,17 +70,19 @@ class _CalenderState extends State<Calender> {
                         context.read(provider).state =
                             generated[index].firstDay;
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) =>ScaffoldButtomBar(month:generated[index])));
+                            builder: (_) =>
+                                ScaffoldButtomBar(month: generated[index])));
                       },
                       child: Container(
                           child: MonthHomeWidget(
                         month: generated[index],
                       )))
               ]);
-            }else{
-              return Center(child: Text('error Loading database'),);
+            } else {
+              return Center(
+                child: Text('error Loading database'),
+              );
             }
-
           }),
     );
   }

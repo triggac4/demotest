@@ -9,33 +9,6 @@ import 'package:flutter/material.dart';
 class MonthScheduleList extends StatelessWidget {
   MonthScheduleList({Key key, @required this.month}) : super(key: key);
   final Month month;
-  final List<int> hours = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24
-  ];
-
   Widget bars(
     String weekday,
     String abrivDay,
@@ -48,10 +21,11 @@ class MonthScheduleList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: 26,
+          height: 15,
           alignment: Alignment.bottomCenter,
           child: Text(
             abrivDay,
+            textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -59,6 +33,7 @@ class MonthScheduleList extends StatelessWidget {
           ),
         ),
         WeekdayWidget(
+          isSun:abrivDay == 'Sun' ,
           width: widthContainer,
           height: (maxHeight * ((sum[weekday] / sum['total']))),
         ),
@@ -77,7 +52,7 @@ class MonthScheduleList extends StatelessWidget {
       'friday': 0,
       'saturday': 0,
       'sunday': 0,
-      'total':0
+      'total':1
     };
     AllScheduledDate allScheduled = ScheduledDateProvider.of(context);
     final allMonthSchedules = allScheduled.forThatMonth(month);

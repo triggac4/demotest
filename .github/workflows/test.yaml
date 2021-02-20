@@ -2,14 +2,14 @@ name: testStuff
 on: [push]
 jobs:
   run-tests-for-me:
-  runs-on: ubuntu-latest
-  steps:
-    - name: echo hello world
-      run: echo "hello world"
-    - name: node version
-      run: |
-        node -v
-        npm -v
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo hello world
+        run: echo "hello world"
+      - name: node version
+        run: |
+          node -v
+          npm -v
 
 
 

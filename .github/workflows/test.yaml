@@ -5,7 +5,7 @@ job:
   runs-on: ubuntu-latest
   steps:
     - name: echo hello world
-      run: echo hello world
+      run: echo "hello world"
     - name: node version
       run: |
         node -v

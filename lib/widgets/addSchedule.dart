@@ -1,11 +1,15 @@
 import 'dart:math';
 
+import 'package:demotest/models/localNotification.dart';
 import 'package:demotest/models/scheduledDateModel.dart';
+import 'package:demotest/screens/homeScreen.dart';
+import 'package:demotest/screens/scaffoldButtomBar.dart';
+import 'package:demotest/screens/scheduleDetails.dart';
 import 'package:demotest/widgets/howLong.dart';
 import 'package:flutter/material.dart';
 
 class AddSchedule extends StatefulWidget {
-  AddSchedule({this.day, this.chosenDate, this.scheduledDate});
+  AddSchedule({this.day, @required this.chosenDate, this.scheduledDate});
 
   final DateTime day;
   final AllScheduledDate chosenDate;
@@ -18,7 +22,7 @@ class AddSchedule extends StatefulWidget {
 class _AddScheduleState extends State<AddSchedule> {
   DateTime scheduledDate;
   TimeOfDay time = TimeOfDay.now();
-  LengthOfSchedule los=LengthOfSchedule(hour:1,minutes: 0);
+  LengthOfSchedule los = LengthOfSchedule(hour: 1, minutes: 0);
   final String monthly = 'monthly';
   final String yearly = 'yearly';
   final String once = 'once';
@@ -35,9 +39,9 @@ class _AddScheduleState extends State<AddSchedule> {
     time = TimeOfDay(
         hour: widget.scheduledDate?.date?.hour ?? TimeOfDay.now().hour,
         minute: widget.scheduledDate?.date?.minute ?? TimeOfDay.now().minute);
-    los=LengthOfSchedule(
-      hour: widget.scheduledDate?.dateEnd?.hour??1,
-      minutes: widget.scheduledDate?.dateEnd?.minutes??0,
+    los = LengthOfSchedule(
+      hour: widget.scheduledDate?.dateEnd?.hour ?? 1,
+      minutes: widget.scheduledDate?.dateEnd?.minutes ?? 0,
     );
   }
 
@@ -107,12 +111,11 @@ class _AddScheduleState extends State<AddSchedule> {
       setState(() {});
       return;
     }
-
     if (widget.scheduledDate == null) {
       var date = DateTime(widget.day.year, widget.day.month, widget.day.day,
           time.hour, time.minute);
 
-      await widget.chosenDate.addSchedule(date,los, titleController.text,
+      await widget.chosenDate.addSchedule(date, los, titleController.text,
           desController.text, period, colorPosition);
     } else {
       var date = DateTime(
@@ -121,7 +124,7 @@ class _AddScheduleState extends State<AddSchedule> {
           widget.scheduledDate.date.day,
           time.hour,
           time.minute);
-      await widget.chosenDate.updateSchedule(date,los,titleController.text,
+      await widget.chosenDate.updateSchedule(date, los, titleController.text,
           desController.text, period, colorPosition, widget.scheduledDate.id);
     }
     Navigator.of(context).pop();
@@ -129,23 +132,22 @@ class _AddScheduleState extends State<AddSchedule> {
 
   changeHour(int hour) {
     setState(() {
-     los=LengthOfSchedule.together(together: hour);
+      los = LengthOfSchedule.together(together: hour);
     });
   }
-
 
   Widget endDateWidget() {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         FlatButton(
-          color: Colors.orangeAccent,
+            color: Colors.orangeAccent,
             onPressed: () => showDialog(
                 context: context,
                 builder: (_) =>
                     HowLong(initialHowLong: los.together, changed: changeHour)),
             child: Text('hours')),
-        SizedBox(width:10),
+        SizedBox(width: 10),
         Text('${los.hour}hr ${los.minutes}min')
       ],
     );

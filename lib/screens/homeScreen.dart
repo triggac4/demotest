@@ -1,13 +1,14 @@
+import 'package:demotest/models/localNotification.dart';
 import 'package:demotest/models/monthModel.dart';
+import 'package:demotest/models/scheduledDateModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/models/yearModel.dart';
 import 'package:demotest/screens/scaffoldButtomBar.dart';
+import 'package:demotest/screens/scheduleDetails.dart';
 import 'package:demotest/widgets/monthWidget.dart';
 import 'package:demotest/widgets/selectYear.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 class Calender extends StatefulWidget {
   _CalenderState createState() => _CalenderState();
 }
@@ -24,18 +25,24 @@ class _CalenderState extends State<Calender> {
       val = newYear;
     });
   }
-var nigeria=tz.local;
   initState() {
     super.initState();
+    localNotification.onSelectNotification(onSelect);
   }
   Year year = Year();
   List<Month> generated = [];
+  onSelect(String payload)async{
+    final scheduled=ScheduledDateProvider.of(context);
+    final schedule = scheduled.findSchedule(payload);
+    print('id: ${schedule.id} description: ${schedule.description}');
 
+    await Navigator.of(context,rootNavigator: true).push(MaterialPageRoute(builder: (ctx)=>ScheduleDetail(schedule)
+    ));
+  }
   Widget build(BuildContext context) {
     year = Year(
       id: val,
     );
-
     generated = year.generateMonths();
     final scheduledDate = ScheduledDateProvider.of(context);
     var provider = StateNotifierProvider((ref) => scheduledDate);

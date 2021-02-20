@@ -13,9 +13,7 @@ class ScaffoldButtomBar extends StatefulWidget{
 }
 
 class _ScaffoldButtomBarState extends State<ScaffoldButtomBar> {
-  final homeScreenNav=GlobalKey<NavigatorState>();
-  final scheduleScreenNav=GlobalKey<NavigatorState>();
-  List<GlobalKey<NavigatorState>> navStates=[];
+
 void initState(){
   super.initState();
   tabView= {
@@ -23,7 +21,7 @@ void initState(){
       'scheduleScreen':  MonthScheduleList(month:widget.month) ,
     };
   page='homeScreen';
-  navStates=[homeScreenNav,scheduleScreenNav];
+
 }
   Map<String,Widget> tabView;
 String page;

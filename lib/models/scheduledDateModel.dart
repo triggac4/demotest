@@ -1,8 +1,10 @@
+import 'package:demotest/models/localNotification.dart';
 import 'package:demotest/models/monthModel.dart';
 import 'package:demotest/models/sqlDatabase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
+import 'localNotification.dart';
 
 class LengthOfSchedule{
    int hour;
@@ -47,7 +49,7 @@ class LengthOfSchedule{
 
 }
 class ScheduledDate {
-  String id = UniqueKey().toString();
+  String id;
   String title;
   String description;
   DateTime date;
@@ -150,7 +152,10 @@ void addTodates(ScheduledDate schedule){
   selectedDay(DateTime day) {
     state = day;
   }
-
+ScheduledDate findSchedule(String id){
+   var schedule= _dates.firstWhere((element) => element.id==id);
+   return schedule;
+}
   Future<void> initialDbLoad() async {
     try {
       _dates = [];
@@ -158,11 +163,10 @@ void addTodates(ScheduledDate schedule){
 
       scheduleList.forEach((element) {
         final shh = ScheduledDate.toScheduledDate(element);
-        print(shh.id);
         _dates.add(shh);
       });
-      print(_dates[0].title);
-    } catch (e) {
+    } 
+      catch (e) {
       print(e);
     }
   }
@@ -216,6 +220,8 @@ List<ScheduledDate> forThatMonth(Month month){
     try {
       await sql.update(schedule);
       _dates.insert(index, schedule);
+      localNotification.removeNotification(int.parse(schedule.id));
+      localNotification.addScheduleNotification(schedule.id, title, description, date);
     }catch(e){
       print(e);
       _dates.insert(index, beforeUpdate);
@@ -233,7 +239,9 @@ List<ScheduledDate> forThatMonth(Month month){
         positionInColor: colorPosition);
     try {
       await sql.insert(schedule);
-      _dates.add(schedule);
+     await initialDbLoad();
+      print(_dates.length-1);
+      localNotification.addScheduleNotification(_dates[_dates.length-1].id, title, description, date);
     }catch(e){
       print(e);
     }
@@ -249,6 +257,7 @@ List<ScheduledDate> forThatMonth(Month month){
     });
     try {
       await sql.delectSchedule(schedule.id);
+      localNotification.removeNotification(int.parse(schedule.id));
     } catch (e){
       print(e);
       if (index >= 0) {

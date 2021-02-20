@@ -1,6 +1,6 @@
 name: testStuff
 on: [push]
-job:
+jobs:
   run-tests-for-me:
   runs-on: ubuntu-latest
   steps:

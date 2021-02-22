@@ -9,14 +9,24 @@ jobs:
       - name: directory
         run: | 
           pwd
-          ls
+          ls -a
 
-          
+      - name: git-checkout
+        uses: action/checkout@v2
+      
+      - name: directory
+        run: | 
+          pwd
+          ls -a
+          echo $GITHUB_SHA
+          echo $GITHUB_REPOSITORY
+          echo '${{github.token}}'
       - name: initial-action
         id: iniAction
         uses: actions/hello-world-javascript-action@v1
         with:
           who-to-greet: kenechukwu
+      
       - name: output-action
     
         run: echo "${{steps.iniAction.outputs.time}}"

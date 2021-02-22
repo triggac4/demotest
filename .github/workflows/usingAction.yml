@@ -1,5 +1,16 @@
 name: usingAction
-on: [push]
+on: 
+  push: 
+  pull_request:
+    types:
+      - 'opened'
+      - 'reopened'
+      - 'synchronize'
+      - 'review_requested'
+      - 'edited'
+
+      
+      
 jobs:
   greeting-action:
     runs-on: ubuntu-latest
@@ -21,6 +32,7 @@ jobs:
           echo $GITHUB_SHA
           echo $GITHUB_REPOSITORY
           echo '${{github.token}}'
+
       - name: initial-action
         id: iniAction
         uses: actions/hello-world-javascript-action@v1

@@ -1,0 +1,15 @@
+name: usingAction
+on: [push]
+jobs:
+  greeting-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: initial-action
+        id: iniAction
+        uses: actions/hello-world-javascript-action@v1
+        with:
+          who-to-greet: kenechukwu
+      - name: output-action
+        run: echo '${{steps.iniAction.output.time}}'
+    
+    

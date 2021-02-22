@@ -12,7 +12,7 @@ jobs:
           ls -a
 
       - name: git-checkout
-        uses: action/checkout@v2
+        uses: actions/checkout@v2
       
       - name: directory
         run: | 

@@ -4,8 +4,14 @@ jobs:
   greeting-action:
     runs-on: ubuntu-latest
 
-    
+
     steps:
+      - name: directory
+        run: | 
+          pwd
+          ls
+
+          
       - name: initial-action
         id: iniAction
         uses: actions/hello-world-javascript-action@v1

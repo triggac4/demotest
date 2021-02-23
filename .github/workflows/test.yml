@@ -4,8 +4,24 @@ jobs:
   run-tests-for-me:
     runs-on: ubuntu-latest
     steps:
-      - name: echo hello world
-        run: echo hello world
+      - name: clone and push 
+        run: |
+          pwd
+          l -a
+          git init
+          git remote add origin "https://$GITHUB_ACTOR:${{secret.GITHUB_TOKEN}}github.com/${{GITHUB_REPOSITORY}}.git"
+          git config --global user.email 'triggac4@gmail.com'
+          git config --global user.name 'triggac4'
+          git fetch
+          git checkout master
+          git branch --set-upstream-to=origin/master
+          git pull
+          l -a
+          echo $random >> random.txt
+          l -a
+          git add .
+          git commit -m 'from bot'
+          git push
       - name: node version
         run: |
           node -v

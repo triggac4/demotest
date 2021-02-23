@@ -13,7 +13,7 @@ jobs:
           git config --global user.email 'triggac4@gmail.com'
           git config --global user.name 'triggac4'
           git fetch
-          git checkout -m main
+          git checkout main
           git branch --set-upstream-to=origin main
           git pull
           ls -a

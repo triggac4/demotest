@@ -22,9 +22,6 @@ jobs:
           pwd
           ls -a
 
-      - name: git-checkout
-        uses: actions/checkout@v2
-      
       - name: directory
         run: | 
           pwd

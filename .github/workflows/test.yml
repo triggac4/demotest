@@ -15,7 +15,7 @@ jobs:
           git fetch
           git checkout main
           git branch --set-upstream-to=origin main
-          git pull
+          git fetch
           ls -a
           echo $random >> random.txt
           ls -a

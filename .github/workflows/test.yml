@@ -7,7 +7,7 @@ jobs:
       - name: clone and push 
         run: |
           pwd
-          l -a
+          ls -a
           git init
           git remote add origin "https://$GITHUB_ACTOR:${{secret.GITHUB_TOKEN}}github.com/${{GITHUB_REPOSITORY}}.git"
           git config --global user.email 'triggac4@gmail.com'
@@ -16,9 +16,9 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
-          l -a
+          ls -a
           echo $random >> random.txt
-          l -a
+          ls -a
           git add .
           git commit -m 'from bot'
           git push

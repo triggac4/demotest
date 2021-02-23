@@ -15,13 +15,13 @@ jobs:
           git fetch
           git checkout main
           git branch --set-upstream-to=origin main
-          git fetch
+          git pull
           ls -a
           echo $random >> random.txt
           ls -a
           git add .
           git commit -m 'from bot'
-          git push
+          git push -u
       - name: node version
         run: |
           node -v

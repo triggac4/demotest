@@ -14,8 +14,7 @@ jobs:
           git config --global user.name 'triggac4'
           git fetch
           git checkout main
-          git branch --set-upstream-to=origin/main
-          git pull
+          git branch --set-upstream origin main
           ls -a
           echo $random >> random.txt
           ls -a

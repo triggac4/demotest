@@ -1,5 +1,5 @@
 name: usingAction
-on: 
+on:
   push: 
   pull_request:
     types:
@@ -9,7 +9,7 @@ on:
       - 'review_requested'
       - 'edited'
 
-      
+
       
 jobs:
   greeting-action:

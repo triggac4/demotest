@@ -1,16 +1,9 @@
-# demotest
+# On time
 
-A new Flutter project.
+flutter calender with pop up notifications for events
 
-## Getting Started
+calender built with flutter and events which are color coded for easy view
+be free to contribute in any way you can even if its a typo on the read me SMILES.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Each event is given specific duration in which we use to give some analysis on the amount of events done on each weekday
+more features will be added soon and hopefully going on PlayStore before march

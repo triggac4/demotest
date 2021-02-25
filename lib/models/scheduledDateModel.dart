@@ -3,6 +3,7 @@ import 'package:demotest/models/monthModel.dart';
 import 'package:demotest/models/sqlDatabase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'localNotification.dart';
 
@@ -123,15 +124,19 @@ class AllScheduledDate extends StateNotifier<DateTime> {
   AllScheduledDate(this.dayyy) : super(dayyy);
   final DateTime dayyy;
   List<ScheduledDate> _dates = [];
+
   List<ScheduledDate> get dates {
     return [..._dates];
   }
-void addTodates(ScheduledDate schedule){
+
+  void addTodates(ScheduledDate schedule) {
     _dates.add(schedule);
-}
+  }
+
   int firstScheduleOfTheDay(DateTime date) {
-    if(date==null){
-      return -1;}
+    if (date == null) {
+      return -1;
+    }
     var index = _dates.indexWhere((element) {
       if (element.date.day == date.day &&
           element.date.month == date.month &&
@@ -141,7 +146,8 @@ void addTodates(ScheduledDate schedule){
           element.date.month == date.month &&
           element.period == 'yearly') {
         return true;
-      } else if (element.date.day == date.day && element.period == 'monthly'&& element.date.year==date.year) {
+      } else if (element.date.day == date.day && element.period == 'monthly' &&
+          element.date.year == date.year) {
         return true;
       } else
         return false;
@@ -152,10 +158,12 @@ void addTodates(ScheduledDate schedule){
   selectedDay(DateTime day) {
     state = day;
   }
-ScheduledDate findSchedule(String id){
-   var schedule= _dates.firstWhere((element) => element.id==id);
-   return schedule;
-}
+
+  ScheduledDate findSchedule(String id) {
+    var schedule = _dates.firstWhere((element) => element.id == id);
+    return schedule;
+  }
+
   Future<void> initialDbLoad() async {
     try {
       _dates = [];
@@ -165,29 +173,33 @@ ScheduledDate findSchedule(String id){
         final shh = ScheduledDate.toScheduledDate(element);
         _dates.add(shh);
       });
-    } 
-      catch (e) {
+    }
+    catch (e) {
       print(e);
     }
   }
-List<ScheduledDate> forThatMonth(Month month){
-    List<ScheduledDate> scheduledDate=[];
-    if(month==null){return scheduledDate;}
+
+  List<ScheduledDate> forThatMonth(Month month) {
+    List<ScheduledDate> scheduledDate = [];
+    if (month == null) {
+      return scheduledDate;
+    }
     month.dayAndDate.forEach((key, value) {
       value.forEach((date) {
         scheduledDate.addAll(forThatDay(date));
       });
     });
     return scheduledDate;
-}
+  }
+
   List<ScheduledDate> forThatDay(DateTime dayy) {
     List<ScheduledDate> forThatDay = [];
-    if(dayy==null)return forThatDay;
+    if (dayy == null) return forThatDay;
     _dates.forEach((element) {
       if (element.date.day == dayy.day &&
           element.date.month == dayy.month &&
-          element.date.year == dayy.year&&
-      element.period=='once'
+          element.date.year == dayy.year &&
+          element.period == 'once'
       ) {
         forThatDay.add(element);
       } else if (element.date.day == dayy.day &&
@@ -200,9 +212,17 @@ List<ScheduledDate> forThatMonth(Month month){
     });
     return forThatDay;
   }
+
   Sql sql = SQLdatabase();
-  Future<void> updateSchedule(DateTime date,LengthOfSchedule los ,String title, String description,
+
+  Future<void> updateSchedule(DateTime date, LengthOfSchedule los, String title,
+      String description,
       String period, int colorPosition, String id) async {
+    if (date.isBefore(DateTime.now())) {
+      return
+        throw PlatformException(
+            code: '1', message: 'event time has been passed');
+    }
     var schedule = ScheduledDate(
         id: id,
         dateEnd: los,
@@ -212,24 +232,32 @@ List<ScheduledDate> forThatMonth(Month month){
         period: period,
         positionInColor: colorPosition);
     int index = _dates.indexWhere((element) => id == element.id);
-    if(index==-1)return;
-    ScheduledDate beforeUpdate=_dates[index];
+    if (index == -1) return;
+    ScheduledDate beforeUpdate = _dates[index];
     _dates.removeWhere((element) {
       return element.id == id;
     });
     try {
-      await sql.update(schedule);
-      _dates.insert(index, schedule);
       localNotification.removeNotification(int.parse(schedule.id));
-      localNotification.addScheduleNotification(schedule.id, title, description, date);
-    }catch(e){
+      await sql.update(schedule);
+      localNotification.addScheduleNotification(
+          schedule.id, title, description, date);
+      _dates.insert(index, schedule);
+    } catch (e) {
       print(e);
       _dates.insert(index, beforeUpdate);
+      throw PlatformException(code: '2', message: 'something went wrong');
     }
   }
 
-  Future<void> addSchedule(DateTime date,LengthOfSchedule los, String title, String description,
+  Future<void> addSchedule(DateTime date, LengthOfSchedule los, String title,
+      String description,
       String period, int colorPosition) async {
+    if (date.isBefore(DateTime.now())) {
+      return
+        throw PlatformException(
+            code: '4', message: 'event time has been passed');
+    }
     var schedule = ScheduledDate(
         dateEnd: los,
         date: date,
@@ -239,18 +267,20 @@ List<ScheduledDate> forThatMonth(Month month){
         positionInColor: colorPosition);
     try {
       await sql.insert(schedule);
-     await initialDbLoad();
-      print(_dates.length-1);
-      localNotification.addScheduleNotification(_dates[_dates.length-1].id, title, description, date);
-    }catch(e){
+      await initialDbLoad();
+      print(_dates.length - 1);
+      localNotification.addScheduleNotification(
+          _dates[_dates.length - 1].id, title, description, date);
+    } catch (e) {
       print(e);
+      throw PlatformException(code: '3', message: 'something went wrong');
     }
   }
 
   Future<void> removeSchedule(ScheduledDate schedule) async {
     int index = _dates.indexWhere((element) => schedule.id == element.id);
     print(index);
-    if(index==-1)return;
+    if (index == -1) {return;}
     final removed = schedule;
     _dates.removeWhere((element) {
       return element.id == schedule.id;
@@ -258,11 +288,11 @@ List<ScheduledDate> forThatMonth(Month month){
     try {
       await sql.delectSchedule(schedule.id);
       localNotification.removeNotification(int.parse(schedule.id));
-    } catch (e){
+    } catch (e) {
       print(e);
-      if (index >= 0) {
-        _dates.insert(index, removed);
-      }
+      print('enter');
+      _dates.insert(index, removed);
+      throw PlatformException(code: '5', message: 'failed to delete');
     }
   }
 }

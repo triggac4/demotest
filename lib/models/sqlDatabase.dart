@@ -15,7 +15,7 @@ abstract class Sql {
 }
 
 class SQLdatabase implements Sql {
-  static Database _database;
+  static Database? _database;
 
   Future<void> _createDatebase() async {
     print('created');
@@ -32,31 +32,39 @@ class SQLdatabase implements Sql {
       print(e);
     }
   }
-@override
+
+  @override
   Future<void> insert(ScheduledDate date) async {
-    if (_database == null) {
-      await _createDatebase();
-    }
     try {
-      final db = _database;
-      await db.insert("scheduledTable", date.toMap());
+      if (_database == null) {
+        await _createDatebase();
+      }
+       final db = _database;
+      var schedule=date.toMap();
+      schedule['id']=null;
+      await db?.insert("scheduledTable",schedule
+      );
     } catch (e) {
       rethrow;
     }
   }
-@override
+
+  @override
   Future<void> update(ScheduledDate schedule) async {
     if (_database == null) {
       await _createDatebase();
     }
     try {
-       // _database.rawUpdate(
-       //    "UPDATE scheduledTable SET title='${schedule.title}', description='${schedule.description}', date='${schedule.date.toString()}',positionInColor=${schedule.positionInColor},period='${schedule.period}',dateEnd='${schedule.dateEnd.together}' WHERE id=${schedule.id}");
-       await _database.update('scheduledTable', schedule.toMap(),where:'id=${schedule.id}',);
+      await _database?.update(
+        'scheduledTable',
+        schedule.toMap(),
+        where: 'id=${schedule.id}',
+      );
     } catch (e) {
       rethrow;
     }
   }
+
   @override
   Future<List<Map<String, dynamic>>> getSchedulesFromDb() async {
     if (_database == null) {
@@ -64,7 +72,7 @@ class SQLdatabase implements Sql {
     }
     try {
       final schedules =
-          await _database.rawQuery('SELECT * FROM scheduledTable');
+          await _database?.rawQuery('SELECT * FROM scheduledTable');
       if (schedules == null) {
         return [];
       } else
@@ -73,13 +81,14 @@ class SQLdatabase implements Sql {
       rethrow;
     }
   }
-@override
+
+  @override
   Future<void> delectSchedule(String id) async {
     if (_database == null) {
       await _createDatebase();
     }
     try {
-      await _database.rawDelete("DELETE FROM scheduledTable WHERE id='$id'");
+      await _database?.rawDelete("DELETE FROM scheduledTable WHERE id='$id'");
     } catch (e) {
       print('thrown');
       rethrow;

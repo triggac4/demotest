@@ -4,8 +4,8 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
 class LocalNotification {
-  static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
-  InitializationSettings _initializationSettings;
+  static late FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+ late InitializationSettings _initializationSettings;
 
   LocalNotification._() {
     _initializePlugin();
@@ -17,17 +17,17 @@ class LocalNotification {
     _initializationSettings = InitializationSettings(android: android);
   }
 
-  onSelectNotification(Function(String payload) onSelect) async {
+  Future<void> onSelectNotification(Function(String payload) onSelect) async {
      await _flutterLocalNotificationsPlugin.initialize(
       _initializationSettings,
       onSelectNotification: (payload)async{
         print('payLoad $payload');
-       onSelect(payload);},
+       onSelect(payload!);},
     );
   }
 
-  addScheduleNotification(
-      String id, String title, String description, DateTime datetime) {
+    Future<void> addScheduleNotification(
+      String id, String title, String description, DateTime datetime)async{
     tz.initializeTimeZones();
     tz.Location nigeria = tz.getLocation('Africa/Lagos');
     tz.TZDateTime date = tz.TZDateTime.from(datetime, nigeria);
@@ -45,15 +45,19 @@ class LocalNotification {
 
     );
     final notificationDetails = NotificationDetails(android: forAndroid);
-    _flutterLocalNotificationsPlugin.zonedSchedule(int.parse(id),
+    try{
+    await _flutterLocalNotificationsPlugin.zonedSchedule(int.parse(id),
         'It\'s time to be On Time', title, date, notificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.wallClockTime,
         payload: id);
+  }catch(e){
+      rethrow;
+    }
   }
 
-  removeNotification(int id) async {
+ Future<void> removeNotification(int id) async {
     await _flutterLocalNotificationsPlugin.cancel(id);
   }
 }

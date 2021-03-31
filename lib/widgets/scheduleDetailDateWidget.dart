@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 
 class ScheduleDetailDate extends StatelessWidget {
   ScheduleDetailDate(
-      {@required this.scheduledDate,
-      @required this.screenHeight,
-      @required this.screenWidth});
+      {required this.scheduledDate,
+      required this.screenHeight,
+      required this.screenWidth});
   final double screenHeight;
   final double screenWidth;
   final ScheduledDate scheduledDate;

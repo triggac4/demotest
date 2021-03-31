@@ -3,7 +3,7 @@ class WeekdayWidget extends StatelessWidget {
   final double height;
   final double width;
   final bool isSun;
-  const WeekdayWidget({Key key,this.height,this.width,this.isSun}) : super(key: key);
+  const WeekdayWidget({required this.height,required this.width,required this.isSun});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class WeekdayWidget extends StatelessWidget {
               blurRadius: 2
             )
           ],
-          color: Theme.of(context).primaryColor,
+          color: Colors.blueAccent[200],
               borderRadius: BorderRadius.only(bottomLeft:Radius.circular(20),bottomRight: Radius.circular(20))
         ),
       ),

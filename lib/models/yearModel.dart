@@ -5,9 +5,9 @@ abstract class YearBase {
 }
 
 class Year implements YearBase {
-  final int id;
+  late final int id;
 
-  Year({this.id});
+  Year({required this.id});
 @override
   List<Month> generateMonths() {
   List<DateTime> date = [];
@@ -27,31 +27,31 @@ class Year implements YearBase {
   ];
   date = [];
 
-  arrangeWeekday({Month month,DateTime date}){
+  arrangeWeekday({required Month month,required DateTime date}){
    if(date.day==1){
      month.firstDay=date;
    }
     switch (date.weekday) {
       case 7:
-        month.dayAndDate['Sunday'].add(date);
+        month.dayAndDate['Sunday']?.add(date);
         break;
       case 1:
-        month.dayAndDate['Monday'].add(date);
+        month.dayAndDate['Monday']?.add(date);
         break;
       case 2:
-        month.dayAndDate['Tuesday'].add(date);
+        month.dayAndDate['Tuesday']?.add(date);
         break;
       case 3:
-        month.dayAndDate['Wednesday'].add(date);
+        month.dayAndDate['Wednesday']?.add(date);
         break;
       case 4:
-    month.dayAndDate['Thursday'].add(date);
+    month.dayAndDate['Thursday']?.add(date);
     break;
     case 5:
-    month.dayAndDate['Friday'].add(date);
+    month.dayAndDate['Friday']?.add(date);
     break;
     case 6:
-    month.dayAndDate['Saturday'].add(date);
+    month.dayAndDate['Saturday']?.add(date);
     break;
   }
   }
@@ -104,9 +104,7 @@ class Year implements YearBase {
         case 12:
           arrangeWeekday(date: date[index],month: months[11]);
           break;
-
       }
-
     });
 
     print('generated');

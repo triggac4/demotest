@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HowLong extends StatefulWidget {
-  const HowLong(
-      {Key key, @required this.initialHowLong, @required this.changed})
-      : assert(initialHowLong != null, changed != null),
-        super(key: key);
+  const HowLong({required this.initialHowLong, required this.changed});
+
   final int initialHowLong;
   final Function(int changed) changed;
 
@@ -26,22 +24,24 @@ class _HowLongState extends State<HowLong> {
           )),
     );
   }
-changeToString(int length){
-  switch(length){
-    case 1:
-      currentHowLongz = "000"+changedHowLong.toString();
-      break;
-    case 2:
-      currentHowLongz = "00"+changedHowLong.toString();
-      break;
-    case 3:
-      currentHowLongz = "0"+changedHowLong.toString();
-      break;
-    case 4:
-      currentHowLongz = changedHowLong.toString();
-      break;
+
+  changeToString(int length) {
+    switch (length) {
+      case 1:
+        currentHowLongz = "000" + changedHowLong.toString();
+        break;
+      case 2:
+        currentHowLongz = "00" + changedHowLong.toString();
+        break;
+      case 3:
+        currentHowLongz = "0" + changedHowLong.toString();
+        break;
+      case 4:
+        currentHowLongz = changedHowLong.toString();
+        break;
+    }
   }
-}
+
   Widget changeYearValue(String val, String hourMin, int increaseOrDecrease) {
     return Padding(
       padding: EdgeInsets.all(10),
@@ -56,8 +56,8 @@ changeToString(int length){
               } else {
                 setState(() {
                   changedHowLong = changedHowLong + increaseOrDecrease;
-                  int digitLength= changedHowLong.toString().length;
-                 changeToString(digitLength);
+                  int digitLength = changedHowLong.toString().length;
+                  changeToString(digitLength);
                 });
               }
             },
@@ -66,12 +66,12 @@ changeToString(int length){
           eachContainer("$val", false),
           InkWell(
               onTap: () {
-                if(val=='0') {
+                if (val == '0') {
                   print('ok');
-                }else {
+                } else {
                   setState(() {
                     changedHowLong = changedHowLong - increaseOrDecrease;
-                    int digitLength= changedHowLong.toString().length;
+                    int digitLength = changedHowLong.toString().length;
                     changeToString(digitLength);
                   });
                 }
@@ -89,8 +89,9 @@ changeToString(int length){
     changeToString(changedHowLong.toString().length);
   }
 
-  int changedHowLong;
-  String currentHowLongz;
+  late int changedHowLong;
+  late String currentHowLongz;
+
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
@@ -108,18 +109,22 @@ changeToString(int length){
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () {
                         widget.changed(changedHowLong);
                         Navigator.of(context).pop();
                       },
-                      child: Text('change'),
-                      color: Theme.of(context).primaryColor,
+                      child: Text('change',style: TextStyle(color:Colors.black)),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor)),
                     ),
-                    FlatButton(
+                    TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text('cancel'),
-                      color: Theme.of(context).primaryColor,
+                      child: Text('cancel',style: TextStyle(color:Colors.white),),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              Colors.red)),
                     ),
                   ],
                 ),

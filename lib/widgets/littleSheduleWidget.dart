@@ -6,11 +6,11 @@ import 'package:intl/intl.dart';
 class LittleSchedule extends StatelessWidget {
   LittleSchedule(
       this.closedButtomBar,
-    this.editScheduleDate,
+      this.editScheduleDate,
     this.scheduledDate,
     this.removeSchedule,
   );
-  final Function(ScheduledDate scheduledDate, BuildContext context)
+  final void Function(ScheduledDate scheduledDate, BuildContext context)
       editScheduleDate;
   final Function closedButtomBar;
   final Function removeSchedule;
@@ -40,7 +40,7 @@ class LittleSchedule extends StatelessWidget {
               BoxShadow(
                 offset: Offset(1, 5),
                 blurRadius: 4,
-                color:Colors.grey[700],
+                color:Colors.grey[700]!,
               )
             ]),
         child: Container(

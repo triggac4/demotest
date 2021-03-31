@@ -14,7 +14,7 @@ abstract class MonthDetailsResponsive extends StatelessWidget {
 }
 
 class MonthDetailsResponse extends MonthDetailsResponsive {
-  MonthDetailsResponse({width, this.listOfWidget}) : super(width);
+  MonthDetailsResponse({width, required this.listOfWidget}) : super(width);
   final List<Widget> listOfWidget;
 
   Widget potrait() {
@@ -28,6 +28,7 @@ class MonthDetailsResponse extends MonthDetailsResponsive {
   Widget landscape() {
     return SingleChildScrollView(
         child:Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: listOfWidget,
     ));

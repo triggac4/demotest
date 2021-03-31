@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 class HoursWidget extends StatelessWidget {
  final double height;
  final double width;
-  const HoursWidget({Key key,this.width,this.height}) : super(key: key);
+  HoursWidget({required this.width,required this.height});
 
   @override
   Widget build(BuildContext context) {

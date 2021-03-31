@@ -6,11 +6,12 @@ import 'package:demotest/widgets/addSchedule.dart';
 import 'package:demotest/widgets/allScheduleWidget.dart';
 import 'package:demotest/widgets/monthWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MonthDetails extends StatefulWidget {
   MonthDetails(this.month);
-  final Month month;
+  late final Month month;
   static const routeName = 'monthDetails';
 
   @override
@@ -31,7 +32,7 @@ class _MonthDetailsState extends State<MonthDetails> {
       bottomSheetOpen = true;
     });
     final _controller= Scaffold.of(context).showBottomSheet(
-        (context) {
+        (context){
           return AddSchedule(day: day, chosenDate: allschedule);
         })..closed.then((value) =>isDisposed?null:bottomBarClosed());
     return _controller;
@@ -46,6 +47,7 @@ class _MonthDetailsState extends State<MonthDetails> {
         context: context,
         builder: (ctx) {
           return AddSchedule(
+            day: DateTime.now(),
             chosenDate: schedule,
             scheduledDate: scheduledDate,
           );
@@ -53,8 +55,19 @@ class _MonthDetailsState extends State<MonthDetails> {
   }
 
   Future<void> removeScheduledDate(ScheduledDate schedule) async {
-    await allschedule.removeSchedule(schedule).then((value) => setState(() {}));
-  }
+    try {
+      await allschedule.removeSchedule(schedule).then((value) =>
+          setState(() {}));
+    }on PlatformException catch(e){
+      final scaffold = ScaffoldMessenger.of(context);
+      scaffold.removeCurrentSnackBar();
+      scaffold.showSnackBar(SnackBar(
+        content: Text(e.message!), duration: Duration(seconds: 2), action:SnackBarAction(
+          label: 'Ok',
+          onPressed: ()=>scaffold.removeCurrentSnackBar()),
+      ));
+    }
+    }
  void bottomBarClosed(){
  setState(() {
    bottomSheetOpen = false;
@@ -68,7 +81,7 @@ class _MonthDetailsState extends State<MonthDetails> {
     bool isPortrait = width<700;
 
     allschedule = ScheduledDateProvider.of(context);
-    var dayprovider = StateNotifierProvider((ref) {
+    var dayProvider = StateNotifierProvider((ref) {
       return allschedule;
     });
     return  SizedBox(
@@ -91,9 +104,11 @@ class _MonthDetailsState extends State<MonthDetails> {
             ),
             Consumer(
               builder: (cxt, watch, child) {
-                var dateee = watch(dayprovider.state);
+                var dateee = watch(dayProvider.state);
                 return AllSchedulesWidget(
                   closedButtomBar:bottomBarClosed,
+                  // ignore: invalid_use_of_protected_member
+                  addSchedule: ()=>showButtomSheetz(allschedule.state, context),
                   allschedule: allschedule,
                   dateee: dateee,
                   editScheduleDate: editScheduleDate,

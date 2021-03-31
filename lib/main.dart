@@ -1,7 +1,8 @@
 import 'package:demotest/models/scheduledDateModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
+import 'package:demotest/screens/firstSreen.dart';
 import 'package:demotest/screens/homeScreen.dart';
-import 'package:demotest/screens/scaffoldButtomBar.dart';
+import 'package:demotest/widgets/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,8 +20,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.blueAccent[100],
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          highlightColor:Colors.orangeAccent,
+          textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(backgroundColor: Colors.orangeAccent,
+              textStyle: TextStyle(color:Colors.black),))
         ),
-        home: Calender(),
+        home: FirstScreen(),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 class ScheduleDetailTitleDescriptionWidget extends StatelessWidget {
-  const ScheduleDetailTitleDescriptionWidget({Key key, @required this.text,@required this.title,@required this.width}) :assert(text!=null),assert(title!=null),assert(width!=null), super(key: key);
+  const ScheduleDetailTitleDescriptionWidget({required this.text,required this.title,required this.width});
   final String text;
   final String title;
   final double width;

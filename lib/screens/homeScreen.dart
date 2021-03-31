@@ -1,14 +1,12 @@
 import 'package:demotest/models/localNotification.dart';
 import 'package:demotest/models/monthModel.dart';
-import 'package:demotest/models/scheduledDateModel.dart';
 import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/models/yearModel.dart';
-import 'package:demotest/screens/scaffoldButtomBar.dart';
 import 'package:demotest/screens/scheduleDetails.dart';
-import 'package:demotest/widgets/monthWidget.dart';
+import 'package:demotest/widgets/CalenderListView.dart';
 import 'package:demotest/widgets/selectYear.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/all.dart';
 class Calender extends StatefulWidget {
   _CalenderState createState() => _CalenderState();
 }
@@ -28,10 +26,13 @@ class _CalenderState extends State<Calender> {
   initState() {
     super.initState();
     localNotification.onSelectNotification(onSelect);
+    year = Year(
+      id: val,
+    );
   }
-  Year year = Year();
+  late Year year = Year(id: val);
   List<Month> generated = [];
-  onSelect(String payload)async{
+  Future<void> onSelect(String payload)async{
     final scheduled=ScheduledDateProvider.of(context);
     final schedule = scheduled.findSchedule(payload);
     print('id: ${schedule.id} description: ${schedule.description}');
@@ -40,21 +41,17 @@ class _CalenderState extends State<Calender> {
     ));
   }
   Widget build(BuildContext context) {
-    year = Year(
-      id: val,
-    );
-    generated = year.generateMonths();
-    final scheduledDate = ScheduledDateProvider.of(context);
-    var provider = StateNotifierProvider((ref) => scheduledDate);
-
+    year = Year(id: val);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          title: RaisedButton(
-            child: Text("$val"),
-            padding: EdgeInsets.zero,
-            color: Theme.of(context).primaryColor,
+          title: ElevatedButton(
+            child: Text("$val",style: TextStyle(color: Colors.black),),
+            style: ButtonStyle(
+              padding:MaterialStateProperty.all(EdgeInsets.zero),
+              backgroundColor: MaterialStateProperty.all( Theme.of(context).primaryColor)
+            ),
             onPressed: () {
               showDialog(
                   context: context,
@@ -69,22 +66,8 @@ class _CalenderState extends State<Calender> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(children: <Widget>[
-                for (int index = 0; index < generated.length; index++)
-                  InkWell(
-                      onTap: () {
-                        // ignore: invalid_use_of_protected_member
-                        context.read(provider).state =
-                            generated[index].firstDay;
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) =>
-                                ScaffoldButtomBar(month: generated[index])));
-                      },
-                      child: Container(
-                          child: MonthHomeWidget(
-                        month: generated[index],
-                      )))
-              ]);
+              generated = year.generateMonths();
+              return CalenderListView(generated: generated,);
             } else {
               return Center(
                 child: Text('error Loading database'),

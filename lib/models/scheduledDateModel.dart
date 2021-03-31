@@ -4,21 +4,21 @@ import 'package:demotest/models/sqlDatabase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'localNotification.dart';
 
 class LengthOfSchedule{
-   int hour;
-  int minutes;
-  int together;
-  LengthOfSchedule({this.hour, this.minutes}){
+  late int hour;
+  late int minutes;
+  late int together;
+  LengthOfSchedule({required this.hour,required this.minutes}){
     if(minutes.toString().length==1) {
       together = int.parse("$hour" +"0"+"$minutes");
     }else{
       together = int.parse("$hour$minutes");
     }
   }
-   LengthOfSchedule.together({this.together}){
+   LengthOfSchedule.together({required this.together}){
      final los=hoursToString(together);
      hour=los.hour;
      minutes=los.minutes;
@@ -50,18 +50,18 @@ class LengthOfSchedule{
 
 }
 class ScheduledDate {
-  String id;
-  String title;
-  String description;
-  DateTime date;
-  Color color;
-  int positionInColor;
-  String period;
-  LengthOfSchedule dateEnd;
+  late String id;
+  late String title;
+  late String description;
+  late DateTime date;
+  late Color color;
+  late int positionInColor;
+  late String period;
+  late LengthOfSchedule dateEnd;
   static List<Color> colors = [
-    Colors.brown[600],
-    Colors.blueGrey[700],
-    Colors.lime[800],
+    Colors.brown[600]!,
+    Colors.blueGrey[700]!,
+    Colors.lime[800]!,
     Colors.purple,
     Colors.tealAccent,
     Colors.indigoAccent,
@@ -70,12 +70,12 @@ class ScheduledDate {
     Colors.amber
   ];
   ScheduledDate(
-      {this.id,
-      this.date, this.dateEnd,
-      @required this.title,
-      @required this.description,
-      @required this.positionInColor,
-      @required this.period}) {
+      {required this.id,
+      required this.date,required this.dateEnd,
+      required this.title,
+      required this.description,
+      required this.positionInColor,
+      required this.period}) {
     this.color =this.positionInColor>colors.length-1?Colors.blueAccent:colors[this.positionInColor];
   }
   ScheduledDate.toScheduledDate(Map<String, dynamic> mapSchedule) {
@@ -99,8 +99,8 @@ class ScheduledDate {
       'dateEnd':dateEnd.together
     };
   }
+
   @override
-  // TODO: implement hashCode
   int get hashCode => super.hashCode;
 
   @override
@@ -109,7 +109,8 @@ class ScheduledDate {
     else if(this.runtimeType!=other.runtimeType){
       return false;}
     else {
-      ScheduledDate compare=other;
+      // ignore: test_types_in_equals
+      ScheduledDate compare= other as ScheduledDate;
       return this.id==compare.id&&this.title==compare.title
           &&this.description==compare.description;
     }
@@ -134,9 +135,6 @@ class AllScheduledDate extends StateNotifier<DateTime> {
   }
 
   int firstScheduleOfTheDay(DateTime date) {
-    if (date == null) {
-      return -1;
-    }
     var index = _dates.indexWhere((element) {
       if (element.date.day == date.day &&
           element.date.month == date.month &&
@@ -181,9 +179,6 @@ class AllScheduledDate extends StateNotifier<DateTime> {
 
   List<ScheduledDate> forThatMonth(Month month) {
     List<ScheduledDate> scheduledDate = [];
-    if (month == null) {
-      return scheduledDate;
-    }
     month.dayAndDate.forEach((key, value) {
       value.forEach((date) {
         scheduledDate.addAll(forThatDay(date));
@@ -194,7 +189,6 @@ class AllScheduledDate extends StateNotifier<DateTime> {
 
   List<ScheduledDate> forThatDay(DateTime dayy) {
     List<ScheduledDate> forThatDay = [];
-    if (dayy == null) return forThatDay;
     _dates.forEach((element) {
       if (element.date.day == dayy.day &&
           element.date.month == dayy.month &&
@@ -214,15 +208,13 @@ class AllScheduledDate extends StateNotifier<DateTime> {
   }
 
   Sql sql = SQLdatabase();
-
+void changeSQL(Sql datatbase){
+  sql=datatbase;
+}
   Future<void> updateSchedule(DateTime date, LengthOfSchedule los, String title,
       String description,
       String period, int colorPosition, String id) async {
-    if (date.isBefore(DateTime.now())) {
-      return
-        throw PlatformException(
-            code: '1', message: 'event time has been passed');
-    }
+     var hasPassed=date.isAfter(DateTime.now());
     var schedule = ScheduledDate(
         id: id,
         dateEnd: los,
@@ -238,9 +230,10 @@ class AllScheduledDate extends StateNotifier<DateTime> {
       return element.id == id;
     });
     try {
-      localNotification.removeNotification(int.parse(schedule.id));
+      await removeNotification(int.parse(schedule.id));
       await sql.update(schedule);
-      localNotification.addScheduleNotification(
+      if(hasPassed)
+      await addScheduleNotification(
           schedule.id, title, description, date);
       _dates.insert(index, schedule);
     } catch (e) {
@@ -249,32 +242,44 @@ class AllScheduledDate extends StateNotifier<DateTime> {
       throw PlatformException(code: '2', message: 'something went wrong');
     }
   }
+  Future<void> addScheduleNotification(String id, String title,String description,DateTime date)async{
+   await localNotification.addScheduleNotification(
+        id, title, description, date);
+  }
+  Future<void> removeNotification (int id)async{
+    await localNotification.removeNotification(id);
+  }
 
   Future<void> addSchedule(DateTime date, LengthOfSchedule los, String title,
       String description,
       String period, int colorPosition) async {
-    if (date.isBefore(DateTime.now())) {
-      return
-        throw PlatformException(
-            code: '4', message: 'event time has been passed');
-    }
+    var hasPassed= date.isAfter(DateTime.now());
     var schedule = ScheduledDate(
+        id: 'random',
         dateEnd: los,
         date: date,
         description: description,
         title: title,
         period: period,
         positionInColor: colorPosition);
-    try {
-      await sql.insert(schedule);
-      await initialDbLoad();
-      print(_dates.length - 1);
-      localNotification.addScheduleNotification(
-          _dates[_dates.length - 1].id, title, description, date);
-    } catch (e) {
-      print(e);
-      throw PlatformException(code: '3', message: 'something went wrong');
-    }
+
+      try {
+        await sql.insert(schedule);
+        print('pass');
+        await initialDbLoad();
+        print(_dates.length);
+        if (hasPassed) {
+          if (_dates.length == 0) {
+            return;
+          } else {
+            await addScheduleNotification(
+                _dates[_dates.length - 1].id, title, description, date);
+          }
+        }
+      } on PlatformException catch(_){
+        print('caught you');
+        throw PlatformException(code: '3', message: 'something went wrong');
+      }
   }
 
   Future<void> removeSchedule(ScheduledDate schedule) async {
@@ -287,7 +292,7 @@ class AllScheduledDate extends StateNotifier<DateTime> {
     });
     try {
       await sql.delectSchedule(schedule.id);
-      localNotification.removeNotification(int.parse(schedule.id));
+      await removeNotification(int.parse(schedule.id));
     } catch (e) {
       print(e);
       print('enter');

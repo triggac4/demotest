@@ -1,39 +1,59 @@
 import 'package:demotest/models/scheduledDateModel.dart';
+import 'package:demotest/models/sheduledDateProvider.dart';
 import 'package:demotest/widgets/dayWidget.dart';
 import 'package:demotest/models/monthModel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/all.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MnthWidget extends StatefulWidget {
   MnthWidget(
-      {this.bottomSheetOpens,
-      this.month,
-      this.chosenDates,
-      this.isDetail,
-      this.function});
+      {required this.bottomSheetOpens,
+      required this.month,
+      required this.chosenDates,
+      required this.isDetail,
+      required this.function});
+
   final Month month;
-  final AllScheduledDate chosenDates;
+  final AllScheduledDate? chosenDates;
   final bool isDetail;
-  final Function function;
+  final Function? function;
   final bool bottomSheetOpens;
+
   @override
   _MnthWidgetState createState() => _MnthWidgetState();
 }
 
 class _MnthWidgetState extends State<MnthWidget> {
+  initState() {
+    super.initState();
+    dazz = StateNotifierProvider<AllScheduledDate>((ref) {
+      return allScheduledDate;
+    });
+  }
+
   bool get bottomSheetOpen {
     return widget.bottomSheetOpens;
   }
 
-  var dazz = StateNotifierProvider<AllScheduledDate>((ref) {
-    return AllScheduledDate(DateTime.now());
-  });
+  bool once = true;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if (once) {
+      allScheduledDate = ScheduledDateProvider.of(context);
+      once = false;
+    }
+  }
+
+  late AllScheduledDate allScheduledDate;
+  late StateNotifierProvider<AllScheduledDate> dazz;
+
   Column oneColumn(String dayz, List<DateTime> weekday) {
     List<InkWell> daywidgets = [];
     for (DateTime day in weekday) {
-      var index =
-          widget.isDetail ? widget.chosenDates.firstScheduleOfTheDay(day) : -1;
+      int index = widget.chosenDates?.firstScheduleOfTheDay(day) ?? -1;
       daywidgets.add(InkWell(
         onTap: widget.isDetail
             ? () {
@@ -41,7 +61,7 @@ class _MnthWidgetState extends State<MnthWidget> {
                   Navigator.of(context).pop();
                 }
                 // ignore: invalid_use_of_protected_member
-                context.read(dazz).state = widget.chosenDates.selectedDay(day);
+                 widget.chosenDates?.selectedDay(day);
                 FocusScope.of(context).unfocus();
               }
             : null,
@@ -51,16 +71,17 @@ class _MnthWidgetState extends State<MnthWidget> {
                   Navigator.of(context).pop();
                 }
                 // ignore: invalid_use_of_protected_member
-                context.read(dazz).state = widget.chosenDates.selectedDay(day);
-                index = widget.chosenDates.firstScheduleOfTheDay(day);
+                 widget.chosenDates?.selectedDay(day);
+                index = widget.chosenDates?.firstScheduleOfTheDay(day) ?? -1;
                 print(day);
-                widget.function(day, context);
+                widget.function!(day, context);
               }
             : null,
         child: widget.isDetail
             ? MonthDetailDayWidget(
                 date: day,
-                color: index < 0 ? null : widget.chosenDates.dates[index].color,
+                color:
+                    index < 0 ? null : widget.chosenDates?.dates[index].color,
                 hasSchedule: index >= 0 ? true : false)
             : MonthDayWidget(
                 date: day,
@@ -72,20 +93,20 @@ class _MnthWidgetState extends State<MnthWidget> {
     return Column(children: [
       Text(
         dayz.substring(0, 3),
-        style: TextStyle(color: isSun ? Colors.red : Colors.black),
+        style: TextStyle(color: isSun ? Colors.red : Colors.black,fontWeight: FontWeight.bold),
       ),
-      weekday[0].day > widget.month.dayAndDate['Saturday'][0].day
-          ? DateWidget(date:null)
+      weekday[0].day > widget.month.dayAndDate['Saturday']![0].day
+          ? MonthDetailDayWidget(date: null, color: null, hasSchedule: false)
           : SizedBox(height: 0),
       ...daywidgets,
       weekday[weekday.length - 1].day >
               widget
                   .month
-                  .dayAndDate['Saturday']
-                      [widget.month.dayAndDate['Saturday'].length - 1]
+                  .dayAndDate['Saturday']![
+                      widget.month.dayAndDate['Saturday']!.length - 1]
                   .day
           ? SizedBox()
-          : DateWidget(date: null,),
+          : MonthDetailDayWidget(date: null, color: null, hasSchedule: false),
     ]);
   }
 
@@ -93,13 +114,13 @@ class _MnthWidgetState extends State<MnthWidget> {
 
   initializeColumn() {
     weekdays = [
-      oneColumn('Sunday', widget.month.dayAndDate['Sunday']),
-      oneColumn('Monday', widget.month.dayAndDate['Monday']),
-      oneColumn('Tuesday', widget.month.dayAndDate['Tuesday']),
-      oneColumn('Wednesday', widget.month.dayAndDate['Wednesday']),
-      oneColumn('Thursday', widget.month.dayAndDate['Thursday']),
-      oneColumn('Friday', widget.month.dayAndDate['Friday']),
-      oneColumn('Saturday', widget.month.dayAndDate['Saturday'])
+      oneColumn('Sunday', widget.month.dayAndDate['Sunday']!),
+      oneColumn('Monday', widget.month.dayAndDate['Monday']!),
+      oneColumn('Tuesday', widget.month.dayAndDate['Tuesday']!),
+      oneColumn('Wednesday', widget.month.dayAndDate['Wednesday']!),
+      oneColumn('Thursday', widget.month.dayAndDate['Thursday']!),
+      oneColumn('Friday', widget.month.dayAndDate['Friday']!),
+      oneColumn('Saturday', widget.month.dayAndDate['Saturday']!)
     ];
   }
 
@@ -128,10 +149,10 @@ class _MnthWidgetState extends State<MnthWidget> {
 
 class MonthDetailWidget extends MnthWidget {
   MonthDetailWidget(
-      {AllScheduledDate chosenDates,
-      Month month,
-      Function function,
-      bool bottomOpen})
+      {required AllScheduledDate? chosenDates,
+      required Month month,
+      required Function function,
+      required bool bottomOpen})
       : super(
             chosenDates: chosenDates,
             isDetail: true,
@@ -141,5 +162,11 @@ class MonthDetailWidget extends MnthWidget {
 }
 
 class MonthHomeWidget extends MnthWidget {
-  MonthHomeWidget({Month month}) : super(isDetail: false, month: month);
+  MonthHomeWidget({required Month month})
+      : super(
+            isDetail: false,
+            month: month,
+            bottomSheetOpens: false,
+            chosenDates: null,
+            function: null);
 }
